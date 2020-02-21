@@ -27,7 +27,7 @@ public class PopulateLayout : MonoBehaviour
 		fileDict = new Dictionary<string, bool>();
 		fileList = new List<string>();
 
-		bounds = GameObject.Find("bounds");
+		bounds = FindInActiveObjectByName("bounds");
 		render = bounds.GetComponentInChildren<Renderer>();
     	render.enabled = true;
 		
@@ -120,4 +120,20 @@ public class PopulateLayout : MonoBehaviour
         LoadedImage.LoadImage(byteArray);
         render.material.mainTexture = LoadedImage;
 	}
+
+    GameObject FindInActiveObjectByName(string name)
+    {
+        Transform[] objs = Resources.FindObjectsOfTypeAll<Transform>() as Transform[];
+        for (int i = 0; i < objs.Length; i++)
+        {
+            if (objs[i].hideFlags == HideFlags.None)
+            {
+                if (objs[i].name == name)
+                {
+                    return objs[i].gameObject;
+                }
+            }
+        }
+        return null;
+    }
 }
