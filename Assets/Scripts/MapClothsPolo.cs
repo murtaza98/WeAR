@@ -149,7 +149,7 @@ public class MapClothsPolo : MonoBehaviour
             }
         }
         // モデルと重ならないように少しずらして表示
-        Vector3 offset = new Vector3(500.0f, 500.0f, 500.0f);
+        Vector3 offset = new Vector3(0.0f, 0.0f, 0.0f);
         // If already initialized, update the cube position
         for (int i = 0; i < bone_num_2d; i++)
         {
@@ -233,6 +233,35 @@ public class MapClothsPolo : MonoBehaviour
 
         NowFrame = (NowFrame + 1) % totalFrames;
 
+    }
+
+    void SetupCanvas() {
+        GameObject canvas = GameObject.Find("Canvas");
+        RectTransform rectTransform = canvas.GetComponent<RectTransform>();
+
+        rectTransform.sizeDelta = new Vector2(730, 311);
+        rectTransform.eulerAngles = new Vector3(0.0f, -180.0f, 0.0f);
+    }
+
+    void ResetCanvas()
+    {
+        GameObject canvas = GameObject.Find("Canvas");
+        RectTransform rectTransform = canvas.GetComponent<RectTransform>();
+
+        rectTransform.sizeDelta = new Vector2(800, 1002);
+        rectTransform.eulerAngles = new Vector3(0.0f, -180.0f, 0.0f);
+    }
+
+    void OnEnable()
+    {
+        Debug.Log("MapClothsPolo onEnable Called");
+        SetupCanvas();
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log("MapClothsPolo onDisable Called");
+        ResetCanvas();
     }
 }
 

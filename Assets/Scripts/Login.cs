@@ -11,7 +11,7 @@ public class Login : MonoBehaviour
 {
     public Button loginBtn;
 	public string path, database_server_ip = "http://192.168.43.8:5000/";
-    public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel;
+    public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel;
     public InputField unameField, passwdField;
     public Dropdown roleField;
     private static readonly HttpClient client = new HttpClient();
@@ -36,10 +36,13 @@ public class Login : MonoBehaviour
     	uploadClothPanel = GameObject.Find("UploadClothPanel");
     	loginPanel = GameObject.Find("LoginPanel");
     	selectPatternPanel = GameObject.Find("SelectPatternPanel");
+		trailRoomPanel = GameObject.Find("TrailRoomPanel");
 
 		uploadVideoPanel.SetActive(false);
     	uploadClothPanel.SetActive(false);
     	selectPatternPanel.SetActive(false);
+		trailRoomPanel.SetActive(true);
+        loginPanel.SetActive(false);
 
     	unameField = GameObject.Find("UsernameInput").GetComponent<InputField>();
     	passwdField = GameObject.Find("PasswordInput").GetComponent<InputField>();
