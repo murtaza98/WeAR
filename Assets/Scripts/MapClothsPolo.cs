@@ -28,6 +28,7 @@ using System.Globalization;
 
 public class MapClothsPolo : MonoBehaviour
 {
+    public GameObject videoPlayer;
     static int bone_num_3d = 32;
     static int bone_num_2d = 18;
     // debug points cube
@@ -56,7 +57,7 @@ public class MapClothsPolo : MonoBehaviour
     static JObject points_2d = null;
     static JObject points_3d = null;
     private Camera cam;
-    
+    static bool updateIsActive = true;
 
     void Start()
     {   
@@ -256,12 +257,29 @@ public class MapClothsPolo : MonoBehaviour
     void OnEnable()
     {
         Debug.Log("MapClothsPolo onEnable Called");
+        videoPlayer = GameObject.Find("VideoPlayerGO");
+        Debug.Log("VIDEO PLAYER OBJ: " + videoPlayer);
+        var video = videoPlayer.GetComponent<UnityEngine.Video.VideoPlayer>();
+        Debug.Log("VIDEO OBJ: " + video);
+        video.Play();
+
+        Timer = 0.0f;
+        NowFrame = 0;
+        while(updateIsActive) {
+            Update();
+        }
         SetupCanvas();
     }
 
     private void OnDisable()
     {
         Debug.Log("MapClothsPolo onDisable Called");
+        videoPlayer = GameObject.Find("VideoPlayerGO");
+        Debug.Log("VIDEO PLAYER OBJ: " + videoPlayer);
+        var video = videoPlayer.GetComponent<UnityEngine.Video.VideoPlayer>();
+        Debug.Log("VIDEO OBJ: " + video);
+        video.Stop();
+        updateIsActive = false;
         ResetCanvas();
     }
 

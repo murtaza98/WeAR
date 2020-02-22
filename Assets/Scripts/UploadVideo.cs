@@ -34,7 +34,7 @@ public class UploadVideo : MonoBehaviour
 		{
 			Debug.Log ("UploadVideo.ShowLoadDialogCoroutine() ===> Selecting video file");
 			try {  
-				IPAddress ipAddr = IPAddress.Parse("192.168.43.8");
+				IPAddress ipAddr = IPAddress.Parse("192.168.0.104");
 		        IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 60000); 
 		 		Debug.Log("Local End point: " + localEndPoint);
 		        Socket sender = new Socket(ipAddr.AddressFamily, 

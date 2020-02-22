@@ -8,7 +8,7 @@ using System;
 
 public class PopulateLayout : MonoBehaviour
 {
-    public GameObject prefab, bounds;  
+    public GameObject prefab, bounds, display_bounds;  
 	// prefab: Populate our Scroll bar with button prefab
 	// bounds: Cloth model from blender 
 	public int numberToCreate;
@@ -18,7 +18,7 @@ public class PopulateLayout : MonoBehaviour
 	public UnityEngine.Object[] sprites;  // To load patterns in resource folder
 	public List<string> fileList;  // Saves filenames in Pattern folder
 	public Dictionary<string, bool> fileDict;
-	public Renderer render;
+	public Renderer render, display_render;
 
     void Start() {
 		int count = -6;  // Number of predefined patterns = 5
@@ -30,7 +30,13 @@ public class PopulateLayout : MonoBehaviour
 		bounds = FindInActiveObjectByName("bounds");
 		render = bounds.GetComponentInChildren<Renderer>();
     	render.enabled = true;
-		
+
+		display_bounds = FindInActiveObjectByName("display_bounds");
+		Debug.Log("DISPLAY BOUNDS: " + display_bounds);
+		display_render = bounds.GetComponentInChildren<Renderer>();
+		Debug.Log("DISPLAY RENDER: " + display_render);
+    	display_render.enabled = true;
+
 		// Loading predefined patterns
 		sprites = Resources.LoadAll("Sprites", typeof(Sprite));
 		foreach(var s in sprites) {
@@ -51,7 +57,9 @@ public class PopulateLayout : MonoBehaviour
 		Debug.Log("PopulateLayout.OnClickImageSprite() ===> Sprite: " + sprites[fileNumber]);
 		
 		Texture2D LoadedImage = ((Sprite)sprites[fileNumber]).texture;
-        render.material.mainTexture = LoadedImage;
+		display_render.material.mainTexture = LoadedImage;
+		Debug.Log("DISPLAY TEXTURE: " + display_render.material.mainTexture);
+        render.material.mainTexture = LoadedImage;	
 	}
 
 	public void GenerateList(String path) {
@@ -119,6 +127,7 @@ public class PopulateLayout : MonoBehaviour
         Texture2D LoadedImage = new Texture2D(2, 2);
         LoadedImage.LoadImage(byteArray);
         render.material.mainTexture = LoadedImage;
+		display_render.material.mainTexture = LoadedImage;
 	}
 
     GameObject FindInActiveObjectByName(string name)

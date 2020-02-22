@@ -41,8 +41,7 @@ public class Login : MonoBehaviour
 		uploadVideoPanel.SetActive(false);
     	uploadClothPanel.SetActive(false);
     	selectPatternPanel.SetActive(false);
-		trailRoomPanel.SetActive(true);
-        loginPanel.SetActive(false);
+		trailRoomPanel.SetActive(false);
 
     	unameField = GameObject.Find("UsernameInput").GetComponent<InputField>();
     	passwdField = GameObject.Find("PasswordInput").GetComponent<InputField>();

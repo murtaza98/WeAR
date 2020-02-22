@@ -18,7 +18,7 @@ public class UploadPatternImage : MonoBehaviour
 		p = FindObjectOfType<PopulateLayout>();
 		Button btn = uploadImageBtn.GetComponent<Button>();
 		btn.onClick.AddListener(UploadImageTask);	
-    }
+	}   
 
 	void UploadImageTask() {
 		StartCoroutine( ShowLoadDialogCoroutine() );
