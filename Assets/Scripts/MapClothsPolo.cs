@@ -85,15 +85,15 @@ public class MapClothsPolo : MonoBehaviour
         // Transform torso = GameObject.Find("Main Camera/"+clothName+"/Armature/torso").transform;
         
         // TODO -- make this generic so that multiple clothes can be selected
-        Transform left_shoulder = FindInActiveObjectByName("left_shoulder").transform;
-        Transform left_elbow = FindInActiveObjectByName("left_elbow").transform;
-        Transform left_wrist = FindInActiveObjectByName("left_wrist").transform;
-        Transform right_shoulder = FindInActiveObjectByName("right_shoulder").transform;
-        Transform right_elbow = FindInActiveObjectByName("right_elbow").transform;
-        Transform right_wrist = FindInActiveObjectByName("right_wrist").transform;
-        Transform neck_left = FindInActiveObjectByName("neck_left").transform;
-        Transform neck_right = FindInActiveObjectByName("neck_right").transform;
-        Transform torso = FindInActiveObjectByName("torso").transform;
+        Transform left_shoulder = GameObject.Find("left_shoulder").transform;
+        Transform left_elbow = GameObject.Find("left_elbow").transform;
+        Transform left_wrist = GameObject.Find("left_wrist").transform;
+        Transform right_shoulder = GameObject.Find("right_shoulder").transform;
+        Transform right_elbow = GameObject.Find("right_elbow").transform;
+        Transform right_wrist = GameObject.Find("right_wrist").transform;
+        Transform neck_left = GameObject.Find("neck_left").transform;
+        Transform neck_right = GameObject.Find("neck_right").transform;
+        Transform torso = GameObject.Find("torso").transform;
 
         cloth = new ClothPolo();
         cloth.left_shoulder = left_shoulder;
