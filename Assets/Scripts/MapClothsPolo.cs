@@ -36,7 +36,7 @@ public class MapClothsPolo : MonoBehaviour
 
     Transform[] cube_2d_t;
 
-    int NowFrame = 0;
+    public static int NowFrame = 0;
     static Vector3[] now_pos_3d = new Vector3[bone_num_3d];
     static Vector3[] now_pos_2d = new Vector3[bone_num_2d];
  
@@ -62,11 +62,11 @@ public class MapClothsPolo : MonoBehaviour
     void Start()
     {   
         // Read 2d data points
-        string points_2d_str = Read("scale_out_1");
+        string points_2d_str = Read(Login.jsonFilePath + "/scale_out_a_ojas");
         points_2d = JObject.Parse(points_2d_str);
 
         // Read 3d data points
-        string points_3d_str = Read("3d_data");
+        string points_3d_str = Read(Login.jsonFilePath + "/3d_data_a_ojas");
         points_3d = JObject.Parse(points_3d_str);
 
 
@@ -203,6 +203,8 @@ public class MapClothsPolo : MonoBehaviour
             // Debug.Log("-----------------------------------FILE READ--------------------------");
             return theTextFile.text;
         }
+
+        // string text = File.ReadAllText(filename);
             
 
         //There's no file, return an empty string.
@@ -218,7 +220,8 @@ public class MapClothsPolo : MonoBehaviour
         for(int i=0;i<bone_num_2d;i++){
             JArray cpoints_str = (JArray) cframe[i+""]["translate"];
             float[] cpoints = cpoints_str.Select(jv => (float)jv).ToArray();
-            now_pos_2d[i] = new Vector3(cpoints[0], cpoints[1], 2.00f);
+            now_pos_2d[i] = new Vector3(cpoints[0], cpoints[1], 2.0f);
+
             // // convert to unity world coordinate
             // now_pos_2d[i] = cam.ScreenToWorldPoint(now_pos_2d[i]);
         }
@@ -241,6 +244,8 @@ public class MapClothsPolo : MonoBehaviour
         GameObject canvas = GameObject.Find("Canvas");
         RectTransform rectTransform = canvas.GetComponent<RectTransform>();
 
+        // canvas.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+
         rectTransform.sizeDelta = new Vector2(730, 311);
         rectTransform.eulerAngles = new Vector3(0.0f, -180.0f, 0.0f);
     }
@@ -250,12 +255,15 @@ public class MapClothsPolo : MonoBehaviour
         GameObject canvas = GameObject.Find("Canvas");
         RectTransform rectTransform = canvas.GetComponent<RectTransform>();
 
+        // canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceCamera;
+
         rectTransform.sizeDelta = new Vector2(800, 1002);
         rectTransform.eulerAngles = new Vector3(0.0f, -180.0f, 0.0f);
     }
 
     void OnEnable()
     {
+        SetupCanvas();
         Debug.Log("MapClothsPolo onEnable Called");
         videoPlayer = GameObject.Find("VideoPlayerGO");
         Debug.Log("VIDEO PLAYER OBJ: " + videoPlayer);
@@ -268,11 +276,11 @@ public class MapClothsPolo : MonoBehaviour
         while(updateIsActive) {
             Update();
         }
-        SetupCanvas();
     }
 
     private void OnDisable()
     {
+        ResetCanvas();
         Debug.Log("MapClothsPolo onDisable Called");
         videoPlayer = GameObject.Find("VideoPlayerGO");
         Debug.Log("VIDEO PLAYER OBJ: " + videoPlayer);
@@ -280,7 +288,6 @@ public class MapClothsPolo : MonoBehaviour
         Debug.Log("VIDEO OBJ: " + video);
         video.Stop();
         updateIsActive = false;
-        ResetCanvas();
     }
 
     private GameObject FindInActiveObjectByName(string name)
@@ -313,7 +320,7 @@ class ClothPolo
     public void UpdatePositions(Vector3[] points2d, Vector3[] points3d, Camera cam)
     {
     	// INITIALIZE CLOTH SIZE
-        float cloth_scale = 0.0007f;
+        float cloth_scale = 0.00004f;
     	float shoulder_size = 269.0f * cloth_scale;
     	float elbow_size = 330.0f * cloth_scale;
     	float wrist_size = 330.0f * cloth_scale;
@@ -332,6 +339,17 @@ class ClothPolo
         Vector3 left_waist_3d = points3d[1];
         Vector3 right_waist_3d = points3d[6];
 
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_shoulder_pos_3d " + left_shoulder_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame+" left_elbow_pos_3d" + left_elbow_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_wrist_pos_3d " + left_wrist_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_shoulder_pos_3d " + right_shoulder_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_elbow_pos_3d " + right_elbow_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_wrist_pos_3d " + right_wrist_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "neck_pos_3d " + neck_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "torso_pos_3d " + torso_pos_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_waist_3d " + left_waist_3d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_waist_3d " + right_waist_3d);
 
         // Read 2d pose estimation data
         Vector3 neck_pos_2d = points2d[1];
@@ -356,6 +374,18 @@ class ClothPolo
         left_wrist_pos_2d = cam.ScreenToWorldPoint(left_elbow_pos_2d);
         right_wrist_pos_2d = cam.ScreenToWorldPoint(right_wrist_pos_2d);
         torso_pos_2d = cam.ScreenToWorldPoint(torso_pos_2d);
+
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " ====");
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "neck_pose_2d " +neck_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_shoulder_pos_2d " + left_shoulder_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_elbow_pos_2d " + left_elbow_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_wrist_pos_2d " + left_wrist_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_shoulder_pos_2d " + right_shoulder_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_elbow_pos_2d " + right_elbow_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_wrist_pos_2d " + right_wrist_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "left_wrist_pos_2d " + left_wrist_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "right_wrist_pos_2d " + right_wrist_pos_2d);
+        Debug.Log("==== Frame No. " + MapClothsPolo.NowFrame + " " + "torso_pos_2d " + torso_pos_2d);
 
         // ORIGINAL
         Vector3 new_neck_pos_3d = neck_pos_2d;

@@ -10,21 +10,31 @@ using UnityEngine.Android;
 public class Login : MonoBehaviour
 {
     public Button loginBtn;
-	public string path, database_server_ip = "http://192.168.43.8:5000/";
+	public static string sessionUser;
+	public static string path, jsonFilePath, videoFilePath;
     public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel;
     public InputField unameField, passwdField;
     public Dropdown roleField;
     private static readonly HttpClient client = new HttpClient();
 
     void Start () {
-		// Creating a Directory Pattern at path for saving uploaded pattern
-		path = Path.Combine(Application.persistentDataPath, "Pattern"); 
+		// Creating directory for saving patterns, videos and 2D/3D JSON files
+		path = Path.Combine(Application.persistentDataPath, "Pattern");
+		jsonFilePath = Path.Combine(Application.persistentDataPath, "JsonFiles");
+		videoFilePath = Path.Combine(Application.persistentDataPath, "Videos");
+
 		if(!Directory.Exists(path)) {
 			Directory.CreateDirectory(path);
-			Debug.Log("Login.Start() ===> Creating Directory at " + path);
 		}
-		else {
-			Debug.Log("Login.Start() ===> Directory exists at " + path);
+
+		if(!Directory.Exists(jsonFilePath)) {
+			Directory.CreateDirectory(jsonFilePath);
+			Debug.Log("JSON FOLDER CREATED");
+		}
+
+		if(!Directory.Exists(videoFilePath)) {
+			Directory.CreateDirectory(videoFilePath);
+			Debug.Log("VIDEO FOLDER CREATED");
 		}
 		
 		// Asking for storage permission
@@ -56,18 +66,20 @@ public class Login : MonoBehaviour
 		string role = roleField.options[roleField.value].text;
 		loginPanel.SetActive(false);
 		uploadVideoPanel.SetActive(true);
+		sessionUser = unameField.text;  // TODO: Comment after testing
     	// CheckLogin(unameField.text, passwdField.text, role);
     }
 
     public async void CheckLogin(string username, string password, string role){
-    	var values = new Dictionary<string, string>{{ "username", username },{ "password", password },{"role", role}};
+    	var values = new Dictionary<string, string>{{ "username", username },{ "password", password },{"role", role}, {"screenheight", Screen.height.ToString()}, {"screenwidth", Screen.width.ToString()}};
 		var content = new FormUrlEncodedContent(values);
-		var response = await client.PostAsync(database_server_ip, content);
+		var response = await client.PostAsync(Credentials.database_server_ip, content);
 
 		var responseString = await response.Content.ReadAsStringAsync();
 		Debug.Log("Login.CheckLogin() ===> Response from database server: " + responseString);
 
 		if(responseString == "success"){
+			sessionUser = username;
 			loginPanel.SetActive(false);
 			if(role == "User"){
     			uploadVideoPanel.SetActive(true);

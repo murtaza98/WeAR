@@ -31,11 +31,11 @@ public class PopulateLayout : MonoBehaviour
 		render = bounds.GetComponentInChildren<Renderer>();
     	render.enabled = true;
 
-		display_bounds = FindInActiveObjectByName("display_bounds");
-		Debug.Log("DISPLAY BOUNDS: " + display_bounds);
-		display_render = bounds.GetComponentInChildren<Renderer>();
-		Debug.Log("DISPLAY RENDER: " + display_render);
-    	display_render.enabled = true;
+		// display_bounds = FindInActiveObjectByName("display_bounds");
+		// Debug.Log("DISPLAY BOUNDS: " + display_bounds);
+		// display_render = bounds.GetComponentInChildren<Renderer>();
+		// Debug.Log("DISPLAY RENDER: " + display_render);
+    	// display_render.enabled = true;
 
 		// Loading predefined patterns
 		sprites = Resources.LoadAll("Sprites", typeof(Sprite));
@@ -57,9 +57,9 @@ public class PopulateLayout : MonoBehaviour
 		Debug.Log("PopulateLayout.OnClickImageSprite() ===> Sprite: " + sprites[fileNumber]);
 		
 		Texture2D LoadedImage = ((Sprite)sprites[fileNumber]).texture;
-		display_render.material.mainTexture = LoadedImage;
-		Debug.Log("DISPLAY TEXTURE: " + display_render.material.mainTexture);
-        render.material.mainTexture = LoadedImage;	
+		// display_render.sharedMaterial.mainTexture = LoadedImage;
+		// Debug.Log("DISPLAY TEXTURE: " + display_render.material.mainTexture);
+        render.sharedMaterial.mainTexture = LoadedImage;	
 	}
 
 	public void GenerateList(String path) {
@@ -126,8 +126,8 @@ public class PopulateLayout : MonoBehaviour
 		byte[] byteArray = File.ReadAllBytes(@filepath);
         Texture2D LoadedImage = new Texture2D(2, 2);
         LoadedImage.LoadImage(byteArray);
-        render.material.mainTexture = LoadedImage;
-		display_render.material.mainTexture = LoadedImage;
+		// display_render.sharedMaterial.mainTexture = LoadedImage;
+        render.sharedMaterial.mainTexture = LoadedImage;
 	}
 
     GameObject FindInActiveObjectByName(string name)

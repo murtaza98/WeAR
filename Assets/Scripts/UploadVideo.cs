@@ -34,7 +34,11 @@ public class UploadVideo : MonoBehaviour
 		{
 			Debug.Log ("UploadVideo.ShowLoadDialogCoroutine() ===> Selecting video file");
 			try {  
-				IPAddress ipAddr = IPAddress.Parse("192.168.0.104");
+				// IPHostEntry ipHost = Dns.GetHostEntry("https://0c7cd9c4.ngrok.io"); 
+				// IPAddress ipAddr = ipHost.AddressList[0]; 
+				// Debug.Log(ipHost.AddressList[0]);
+				// IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 7000);
+				IPAddress ipAddr = IPAddress.Parse(Credentials.database_server_ip);
 		        IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 60000); 
 		 		Debug.Log("Local End point: " + localEndPoint);
 		        Socket sender = new Socket(ipAddr.AddressFamily, 
@@ -48,6 +52,7 @@ public class UploadVideo : MonoBehaviour
 		            sender.Send(FileBrowserHelpers.ReadBytesFromFile(fileName));
 		            sender.Shutdown(SocketShutdown.Both);  
 		            sender.Close(); 
+					// Call script 
 		        }   
 		        catch (ArgumentNullException ane) { 
 		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> ArgumentNullException: " + ane.ToString()); 
