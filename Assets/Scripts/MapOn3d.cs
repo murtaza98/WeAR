@@ -35,19 +35,19 @@ public class MapOn3d : MonoBehaviour
     Transform[] cube_3d_t;
     Transform[] cube_2d_t;
 
-    int NowFrame = 0;
+    public static int NowFrame = 0;
     static Vector3[] now_pos = new Vector3[bone_num];
     static Vector3[] now_pos_2d = new Vector3[bone_num_2d];
     static Vector3[] now_pos_3d = new Vector3[bone_num_3d];
  
-    float Timer;
+    public static float Timer;
     float scale_ratio = 0.001f; //Scale ratio between pos.txt and Unity model
                                 //Since the unit of pos.txt is mm and Unity is m, 
                                 //specify a value close to 0.001. Adjust according to model size 
     float heal_position = 0.00f; // 足の沈みの補正値(単位：m)。プラス値で体全体が上へ移動する
 
     float FrameRate = 15.0f;
-    int totalFrames = 156;
+    int totalFrames = 351;
 
     static Cloth5 cloth;
 
@@ -99,11 +99,11 @@ public class MapOn3d : MonoBehaviour
         cloth.torso = torso;
 
          // Read 3d data points
-        string points_3d_str = Read("3d_data_murtaza");
+        string points_3d_str = Read("3d_data");
         points_3d = JObject.Parse(points_3d_str);
 
         // Read 2d data points
-        string points_2d_str = Read("scale_out_murtaza_ojas_156");
+        string points_2d_str = Read("scale_out_harsh_harsh");
         points_2d = JObject.Parse(points_2d_str);
 
         cam = Camera.main;

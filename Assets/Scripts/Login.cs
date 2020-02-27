@@ -12,7 +12,7 @@ public class Login : MonoBehaviour
     public Button loginBtn;
 	public static string sessionUser;
 	public static string path, jsonFilePath, videoFilePath;
-    public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel;
+    public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel, videoPlayer;
     public InputField unameField, passwdField;
     public Dropdown roleField;
     private static readonly HttpClient client = new HttpClient();
@@ -47,12 +47,14 @@ public class Login : MonoBehaviour
     	loginPanel = GameObject.Find("LoginPanel");
     	selectPatternPanel = GameObject.Find("SelectPatternPanel");
 		trailRoomPanel = GameObject.Find("TrailRoomPanel");
+		videoPlayer = GameObject.Find("VideoPlayerGO");
 
 		uploadVideoPanel.SetActive(false);
     	uploadClothPanel.SetActive(false);
     	selectPatternPanel.SetActive(false);
 		trailRoomPanel.SetActive(false);
-
+		videoPlayer.SetActive(false);
+		
     	unameField = GameObject.Find("UsernameInput").GetComponent<InputField>();
     	passwdField = GameObject.Find("PasswordInput").GetComponent<InputField>();
     	roleField = GameObject.Find("RoleDropdown").GetComponent<Dropdown>();

@@ -8,7 +8,7 @@ using System;
 public class TrialRoom : MonoBehaviour
 {
     public Button uploadImageBtn, tryClothBtn;
-	public GameObject trialRoomPanel, selectPatternPanel;
+	public GameObject trialRoomPanel, selectPatternPanel, videoPlayer;
 
     void Start()
     {
@@ -17,27 +17,11 @@ public class TrialRoom : MonoBehaviour
     }
 
     void TryClothTask() {
-		trialRoomPanel = FindInActiveObjectByName("TrailRoomPanel");
+		trialRoomPanel = Credentials.FindInActiveObjectByName("TrailRoomPanel");
+		videoPlayer = Credentials.FindInActiveObjectByName("VideoPlayerGO");
 		selectPatternPanel = GameObject.Find("/Canvas/SelectPatternPanel");
 		selectPatternPanel.SetActive(false);
+		videoPlayer.SetActive(true);
 		trialRoomPanel.SetActive(true);
-	}
-
-    // Same in UploadVideo.cs
-	/*** TODO: Make this method common ***/
-    GameObject FindInActiveObjectByName(string name)
-	{
-	    Transform[] objs = Resources.FindObjectsOfTypeAll<Transform>() as Transform[];
-	    for (int i = 0; i < objs.Length; i++)
-	    {
-	        if (objs[i].hideFlags == HideFlags.None)
-	        {
-	            if (objs[i].name == name)
-	            {
-	                return objs[i].gameObject;
-	            }
-	        }
-	    }
-	    return null;
 	}
 }

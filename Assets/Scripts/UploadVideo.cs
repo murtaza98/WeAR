@@ -53,6 +53,7 @@ public class UploadVideo : MonoBehaviour
 		            sender.Shutdown(SocketShutdown.Both);  
 		            sender.Close(); 
 					// Call script 
+					PreloadedVideo.PreloadVideoTask();
 		        }   
 		        catch (ArgumentNullException ane) { 
 		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> ArgumentNullException: " + ane.ToString()); 
@@ -67,8 +68,8 @@ public class UploadVideo : MonoBehaviour
 		    catch (Exception e) { 
 		        Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> " + e.ToString()); 
 		    } 
-		    uploadVideoPanel.SetActive(false);
-		    selectPatternPanel.SetActive(true);
+		    // uploadVideoPanel.SetActive(false);
+		    // selectPatternPanel.SetActive(true);
 		}
 	}
 
