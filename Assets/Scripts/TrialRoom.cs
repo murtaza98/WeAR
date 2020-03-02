@@ -22,6 +22,8 @@ public class TrialRoom : MonoBehaviour
 		selectPatternPanel = GameObject.Find("/Canvas/SelectPatternPanel");
 		selectPatternPanel.SetActive(false);
 		videoPlayer.SetActive(true);
+		Debug.Log(Path.Combine(Login.videoFilePath, PreloadVideoList.VideoName));
+		videoPlayer.GetComponent<UnityEngine.Video.VideoPlayer>().url = Path.Combine(Login.videoFilePath, PreloadVideoList.VideoName);
 		trialRoomPanel.SetActive(true);
 	}
 }

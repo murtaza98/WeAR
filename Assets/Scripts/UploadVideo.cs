@@ -38,7 +38,7 @@ public class UploadVideo : MonoBehaviour
 				// IPAddress ipAddr = ipHost.AddressList[0]; 
 				// Debug.Log(ipHost.AddressList[0]);
 				// IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 7000);
-				IPAddress ipAddr = IPAddress.Parse(Credentials.database_server_ip);
+				IPAddress ipAddr = IPAddress.Parse(Credentials.pose_estimation_server_ip);
 		        IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 60000); 
 		 		Debug.Log("Local End point: " + localEndPoint);
 		        Socket sender = new Socket(ipAddr.AddressFamily, 

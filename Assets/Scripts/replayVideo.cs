@@ -15,7 +15,7 @@ public class replayVideo : MonoBehaviour
 
     void ReplayTask() {
         videoPlayer.frame = 0;
-        MapOn3d.Timer = 0.0f;
+        MapOn3d.Timer = 0.00f;
         MapOn3d.NowFrame = 0;
     }
 }

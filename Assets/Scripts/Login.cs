@@ -12,17 +12,19 @@ public class Login : MonoBehaviour
     public Button loginBtn;
 	public static string sessionUser;
 	public static string path, jsonFilePath, videoFilePath;
-    public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel, videoPlayer;
+    public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel, videoPlayer, preloadVideoPanel;
     public InputField unameField, passwdField;
     public Dropdown roleField;
     private static readonly HttpClient client = new HttpClient();
 
     void Start () {
 		// Creating directory for saving patterns, videos and 2D/3D JSON files
+		Debug.Log("Height: " + Screen.height);
+		Debug.Log("Width: " + Screen.width);
 		path = Path.Combine(Application.persistentDataPath, "Pattern");
 		jsonFilePath = Path.Combine(Application.persistentDataPath, "JsonFiles");
 		videoFilePath = Path.Combine(Application.persistentDataPath, "Videos");
-
+		Debug.Log(videoFilePath);
 		if(!Directory.Exists(path)) {
 			Directory.CreateDirectory(path);
 		}
@@ -48,12 +50,14 @@ public class Login : MonoBehaviour
     	selectPatternPanel = GameObject.Find("SelectPatternPanel");
 		trailRoomPanel = GameObject.Find("TrailRoomPanel");
 		videoPlayer = GameObject.Find("VideoPlayerGO");
+		preloadVideoPanel = GameObject.Find("PreloadVideoPanel");
 
 		uploadVideoPanel.SetActive(false);
     	uploadClothPanel.SetActive(false);
     	selectPatternPanel.SetActive(false);
 		trailRoomPanel.SetActive(false);
 		videoPlayer.SetActive(false);
+		preloadVideoPanel.SetActive(false);
 		
     	unameField = GameObject.Find("UsernameInput").GetComponent<InputField>();
     	passwdField = GameObject.Find("PasswordInput").GetComponent<InputField>();

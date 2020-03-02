@@ -103,7 +103,7 @@ public class MapOn3d : MonoBehaviour
         points_3d = JObject.Parse(points_3d_str);
 
         // Read 2d data points
-        string points_2d_str = Read("scale_out_harsh_harsh");
+        string points_2d_str = Read(PreloadVideoList.VideoName.Substring(0, PreloadVideoList.VideoName.Length-4) + "_2D");
         points_2d = JObject.Parse(points_2d_str);
 
         cam = Camera.main;
@@ -235,18 +235,22 @@ public class MapOn3d : MonoBehaviour
 
     public static string Read(string filename) {
         //Load the text file using Reources.Load
-        TextAsset theTextFile = Resources.Load<TextAsset>(filename);
-
+        // TextAsset theTextFile = Resources.Load<TextAsset>(filename);
+        Debug.Log("2D JSON FILE NAME: " + filename);
         //There's a text file named filename, lets get it's contents and return it
-        if(theTextFile != null){
+        // if(theTextFile != null){
             // Debug.Log("-----------------------------------FILE READ--------------------------");
-            return theTextFile.text;
-        }
-            
+            // return theTextFile.text;
+        // }
 
+        StreamReader reader = new StreamReader(Path.Combine(Login.jsonFilePath, filename));
+        string jsonFileContents = reader.ReadToEnd();
+        reader.Close();
+
+        return jsonFileContents;
         //There's no file, return an empty string.
-        Debug.Log("ERROR WHILE READING FILE " + filename);
-        return string.Empty;
+        // Debug.Log("ERROR WHILE READING FILE " + filename);
+        // return string.Empty;
     }
 
     void PointUpdate()

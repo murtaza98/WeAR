@@ -5,18 +5,23 @@ using UnityEngine.UI;
 
 public class SelectPreloadedVideo : MonoBehaviour
 {
-    public GameObject selectPatternPanel, uploadVideoPanel;
+    public GameObject selectPatternPanel, uploadVideoPanel, preloadVideoPanel;
     public Button selectBtn;
+    public PreloadVideoList p;
 
     void Start() {
         uploadVideoPanel = GameObject.Find("UploadVideoPanel");
-        selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel");
+        preloadVideoPanel = Credentials.FindInActiveObjectByName("PreloadVideoPanel");
+        // selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel"); // DELETE
+        p = FindObjectOfType<PreloadVideoList>();
         Button btn = selectBtn.GetComponent<Button>();
         btn.onClick.AddListener(SelectTask);
     }
 
     public void SelectTask() {
         uploadVideoPanel.SetActive(false);
-        selectPatternPanel.SetActive(true);
+        preloadVideoPanel.SetActive(true);
+        p.GenerateButtons();
+        // selectPatternPanel.SetActive(true);    // DELETE
     }
 }

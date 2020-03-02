@@ -16,7 +16,8 @@ using System;
 public class PreloadedVideo : MonoBehaviour
 {
     public static string videoPathURI, json2DFileURI, json3DFileURI;
-    public static GameObject uploadVideoPanel, selectPatternPanel, selectPreloadVideoPanel;
+    public static GameObject uploadVideoPanel, selectPatternPanel, preloadVideoPanel;
+    public static PreloadVideoList p;
     private static readonly HttpClient client = new HttpClient();
 
     public static async void PreloadVideoTask() {
@@ -26,8 +27,8 @@ public class PreloadedVideo : MonoBehaviour
         ****/
         Debug.Log("PreloadVideoTask started");
         uploadVideoPanel = GameObject.Find("UploadVideoPanel");
-		selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel");
-        // selectPreloadVideoPanel = Credentials.FindInActiveObjectByName("PreloadedVideoPanel");
+		// selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel");  // DELETE
+        preloadVideoPanel = Credentials.FindInActiveObjectByName("PreloadVideoPanel");
 
         var values = new Dictionary<string, string>{{ "username", Login.sessionUser }};
 		var content = new FormUrlEncodedContent(values);
@@ -68,9 +69,11 @@ public class PreloadedVideo : MonoBehaviour
 
     private static void Completed(object sender, AsyncCompletedEventArgs e) {
         Debug.Log("Files Downloaded");
+        p = FindObjectOfType<PreloadVideoList>();
         // TODO: Show text on UI for files ready
         uploadVideoPanel.SetActive(false);
-        // selectPreloadVideoPanel.SetActive(true);
-        selectPatternPanel.SetActive(true);
+        preloadVideoPanel.SetActive(true);
+        p.GenerateButtons();
+        // selectPatternPanel.SetActive(true);   // DELETE
     }
 }
