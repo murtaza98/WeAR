@@ -57,7 +57,9 @@ public class MapOn3d : MonoBehaviour
     static JObject points_2d = null;
     static JObject points_3d = null;
 
-    Transform torso_skel, neck_left_skel, neck_right_skel, left_shoulder_skel, right_shoulder_skel, left_elbow_skel, right_elbow_skel, left_wrist_skel, right_wrist_skel;
+    Transform parent_skel, neck_left_skel, neck_right_skel, neck_down_skel, left_shoulder_skel, 
+    left_elbow_skel, left_wrist_skel, right_shoulder_skel, right_elbow_skel, right_wrist_skel, 
+    torso_left_skel, torso_right_skel, left_waist_skel, right_waist_skel;
 
     private Camera cam;
     public GameObject videoPlayer;
@@ -65,38 +67,53 @@ public class MapOn3d : MonoBehaviour
 
     void Start()
     {
-        Transform left_shoulder = GameObject.Find(clothName+"/Armature/torso/neck_left/left_shoulder").transform;
-        Transform left_elbow = GameObject.Find(clothName+"/Armature/torso/neck_left/left_shoulder/left_elbow").transform;
-        Transform left_wrist = GameObject.Find(clothName+"/Armature/torso/neck_left/left_shoulder/left_elbow/left_wrist").transform;
-        Transform right_shoulder = GameObject.Find(clothName+"/Armature/torso/neck_right/right_shoulder").transform;
-        Transform right_elbow = GameObject.Find(clothName+"/Armature/torso/neck_right/right_shoulder/right_elbow").transform;
-        Transform right_wrist = GameObject.Find(clothName+"/Armature/torso/neck_right/right_shoulder/right_elbow/right_wrist").transform;
-        Transform neck_left = GameObject.Find(clothName+"/Armature/torso/neck_left").transform;
-        Transform neck_right = GameObject.Find(clothName+"/Armature/torso/neck_right").transform;
-        Transform torso = GameObject.Find(clothName+"/Armature/torso").transform;
 
+        Transform parent = GameObject.Find(clothName+"/Armature/parent").transform;
+        Transform neck_left = GameObject.Find(clothName+"/Armature/parent/neck_left").transform;
+        Transform neck_right = GameObject.Find(clothName+"/Armature/parent/neck_right").transform;
+        Transform neck_down = GameObject.Find(clothName+"/Armature/parent/neck_down").transform;
+        Transform left_shoulder = GameObject.Find(clothName+"/Armature/parent/neck_left/left_shoulder").transform;
+        Transform left_elbow = GameObject.Find(clothName+"/Armature/parent/neck_left/left_shoulder/left_elbow").transform;
+        Transform left_wrist = GameObject.Find(clothName+"/Armature/parent/neck_left/left_shoulder/left_elbow/left_wrist").transform;
+        Transform right_shoulder = GameObject.Find(clothName+"/Armature/parent/neck_right/right_shoulder").transform;
+        Transform right_elbow = GameObject.Find(clothName+"/Armature/parent/neck_right/right_shoulder/right_elbow").transform;
+        Transform right_wrist = GameObject.Find(clothName+"/Armature/parent/neck_right/right_shoulder/right_elbow/right_wrist").transform;
+        Transform torso_left = GameObject.Find(clothName+"/Armature/parent/neck_down/torso_left").transform;
+        Transform torso_right = GameObject.Find(clothName+"/Armature/parent/neck_down/torso_right").transform;
+        Transform left_waist = GameObject.Find(clothName+"/Armature/parent/neck_down/torso_left/left_waist").transform;
+        Transform right_waist = GameObject.Find(clothName+"/Armature/parent/neck_down/torso_right/right_waist").transform;
 
-        torso_skel = GameObject.Find("torso_skel").transform;
+        parent_skel = GameObject.Find("parent_skel").transform;
         neck_left_skel = GameObject.Find("neck_left_skel").transform;
         neck_right_skel = GameObject.Find("neck_right_skel").transform;
+        neck_down_skel = GameObject.Find("neck_down_skel").transform;
         left_shoulder_skel = GameObject.Find("left_shoulder_skel").transform;
-        right_shoulder_skel = GameObject.Find("right_shoulder_skel").transform;
         left_elbow_skel = GameObject.Find("left_elbow_skel").transform;
-        right_elbow_skel = GameObject.Find("right_elbow_skel").transform;
         left_wrist_skel = GameObject.Find("left_wrist_skel").transform;
+        right_shoulder_skel = GameObject.Find("right_shoulder_skel").transform;
+        right_elbow_skel = GameObject.Find("right_elbow_skel").transform;
         right_wrist_skel = GameObject.Find("right_wrist_skel").transform;
-
+        torso_left_skel = GameObject.Find("torso_left_skel").transform;
+        torso_right_skel = GameObject.Find("torso_right_skel").transform;
+        left_waist_skel = GameObject.Find("left_waist_skel").transform;
+        right_waist_skel = GameObject.Find("right_waist_skel").transform;
 
         cloth = new Cloth5();
-        cloth.left_shoulder = left_shoulder;
-        cloth.right_shoulder = right_shoulder;
-        cloth.right_elbow = right_elbow;
-        cloth.left_elbow = left_elbow;
-        cloth.left_wrist = left_wrist;
-        cloth.right_wrist = right_wrist;
+        cloth.parent = parent;
         cloth.neck_left = neck_left;
         cloth.neck_right = neck_right;
-        cloth.torso = torso;
+        cloth.neck_down = neck_down;
+        cloth.left_shoulder = left_shoulder;
+        cloth.left_elbow = left_elbow;
+        cloth.left_wrist = left_wrist;
+        cloth.right_shoulder = right_shoulder;
+        cloth.right_elbow = right_elbow;
+        cloth.right_wrist = right_wrist;
+        cloth.torso_left = torso_left;
+        cloth.torso_right = torso_right;
+        cloth.left_waist = left_waist;
+        cloth.right_waist = right_waist;
+        
 
          // Read 3d data points
         string points_3d_str = Read("3d_data");
@@ -201,19 +218,24 @@ public class MapOn3d : MonoBehaviour
         Vector3 right_waist_3d = now_pos_3d[6];
 
         // reset skel
-        this.torso_skel.Rotate(-90.0f, 0, 0, Space.Self);
+        this.parent_skel.Rotate(90.0f, 0, 0, Space.Self);
         // translate skel to 3d points
-        this.torso_skel.position = torso_pos_3d * scale_ratio;
+        this.parent_skel.position = neck_pos_3d * scale_ratio;
         this.neck_left_skel.position = neck_pos_3d * scale_ratio;
         this.neck_right_skel.position = neck_pos_3d * scale_ratio;
+        this.neck_down_skel.position = neck_pos_3d * scale_ratio;
         this.left_shoulder_skel.position = left_shoulder_pos_3d * scale_ratio;
-        this.right_shoulder_skel.position = right_shoulder_pos_3d * scale_ratio;
         this.left_elbow_skel.position = left_elbow_pos_3d * scale_ratio;
-        this.right_elbow_skel.position = right_elbow_pos_3d * scale_ratio;
         this.left_wrist_skel.position = left_wrist_pos_3d * scale_ratio;
+        this.right_shoulder_skel.position = right_shoulder_pos_3d * scale_ratio;
+        this.right_elbow_skel.position = right_elbow_pos_3d * scale_ratio;
         this.right_wrist_skel.position = right_wrist_pos_3d * scale_ratio;
+        this.torso_left_skel.position = torso_pos_3d;
+        this.torso_right_skel.position = torso_pos_3d;
+        this.left_waist_skel.position = left_waist_3d;
+        this.right_waist_skel.position = right_waist_3d;
         // rotate skel
-        this.torso_skel.Rotate(90.0f, 0, 0, Space.Self);
+        this.parent_skel.Rotate(-90.0f, 0, 0, Space.Self);
 
 
         // update now_pos_3d with the rotated positions
@@ -224,9 +246,9 @@ public class MapOn3d : MonoBehaviour
         now_pos_3d[18] = this.right_elbow_skel.position;
         now_pos_3d[19] = this.right_wrist_skel.position;
         now_pos_3d[13] = this.neck_left_skel.position;
-        now_pos_3d[0] = this.torso_skel.position;
-        // Vector3 left_waist_3d = now_pos_3d[1];
-        // Vector3 right_waist_3d = now_pos_3d[6];
+        now_pos_3d[0] = this.torso_left_skel.position;
+        now_pos_3d[1] = this.left_waist_skel.position;
+        now_pos_3d[6] = this.right_waist_skel.position;
 
 
         // MOVE CLOTH to this rotated skel
@@ -332,7 +354,9 @@ public class MapOn3d : MonoBehaviour
 
 class Cloth5
 {
-    public Transform left_shoulder, left_elbow, left_wrist, right_shoulder, right_elbow, right_wrist, neck_left, neck_right, torso;
+    public Transform parent, neck_left, neck_right, neck_down, left_shoulder, left_elbow, 
+    left_wrist, right_shoulder, right_elbow, right_wrist, torso_left, torso_right, 
+    left_waist, right_waist;
     Vector3 offset = new Vector3(0, 0, 2.0f);
     float scale_ratio = 0.001f; //Scale ratio between pos.txt and Unity model
                                 //Since the unit of pos.txt is mm and Unity is m, 
@@ -374,28 +398,36 @@ class Cloth5
         Vector3 torso_pos_2d = (left_waist_2d+right_waist_2d)/2.00f;
 
         // map cloth to 3d points in virtual 3d space
-        this.torso.position = torso_pos_3d;
+        this.parent.position = neck_pos_3d;
         this.neck_left.position = neck_pos_3d;
         this.neck_right.position = neck_pos_3d;
+        this.neck_down.position = neck_pos_3d;
         this.left_shoulder.position = left_shoulder_pos_3d;
-        this.right_shoulder.position = right_shoulder_pos_3d;
         this.left_elbow.position = left_elbow_pos_3d;
-        this.right_elbow.position = right_elbow_pos_3d;
         this.left_wrist.position = left_wrist_pos_3d;
+        this.right_shoulder.position = right_shoulder_pos_3d;
+        this.right_elbow.position = right_elbow_pos_3d;
         this.right_wrist.position = right_wrist_pos_3d;
+        this.torso_left.position = torso_pos_3d;
+        this.torso_right.position = torso_pos_3d;
+        this.left_waist.position = left_waist_3d;
+        this.right_waist.position = right_waist_3d;
+
+
+
         //  calc rotation
-        this.right_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, right_shoulder_pos_3d - right_elbow_pos_3d);
-        this.left_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, left_shoulder_pos_3d - left_elbow_pos_3d);
-        this.right_elbow.rotation = Quaternion.FromToRotation(Vector3.down, right_elbow_pos_3d - right_wrist_pos_3d);
-        this.left_elbow.rotation = Quaternion.FromToRotation(Vector3.down, left_elbow_pos_3d - left_wrist_pos_3d);
-        this.neck_left.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - left_shoulder_pos_3d);
-        this.neck_right.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - right_shoulder_pos_3d);
-        this.torso.rotation = Quaternion.FromToRotation(Vector3.left, left_shoulder_pos_3d - right_shoulder_pos_3d);
+        // this.right_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, right_shoulder_pos_3d - right_elbow_pos_3d);
+        // this.left_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, left_shoulder_pos_3d - left_elbow_pos_3d);
+        // this.right_elbow.rotation = Quaternion.FromToRotation(Vector3.down, right_elbow_pos_3d - right_wrist_pos_3d);
+        // this.left_elbow.rotation = Quaternion.FromToRotation(Vector3.down, left_elbow_pos_3d - left_wrist_pos_3d);
+        // this.neck_left.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - left_shoulder_pos_3d);
+        // this.neck_right.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - right_shoulder_pos_3d);
+        // this.torso.rotation = Quaternion.FromToRotation(Vector3.left, left_shoulder_pos_3d - right_shoulder_pos_3d);
 
 
 
         // now translate this points to 2d world
-        this.torso.position = cam.ScreenToWorldPoint(torso_pos_2d);
+        this.parent.position = cam.ScreenToWorldPoint(torso_pos_2d);
     }   
 
     public Vector3 cloneObj(Vector3 v){
