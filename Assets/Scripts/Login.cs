@@ -19,8 +19,6 @@ public class Login : MonoBehaviour
 
     void Start () {
 		// Creating directory for saving patterns, videos and 2D/3D JSON files
-		Debug.Log("Height: " + Screen.height);
-		Debug.Log("Width: " + Screen.width);
 		path = Path.Combine(Application.persistentDataPath, "Pattern");
 		jsonFilePath = Path.Combine(Application.persistentDataPath, "JsonFiles");
 		videoFilePath = Path.Combine(Application.persistentDataPath, "Videos");
@@ -70,16 +68,16 @@ public class Login : MonoBehaviour
 	void TaskOnClick(){
 		Debug.Log("Login.TaskOnClick() ===> Login Button Clicked");
 		string role = roleField.options[roleField.value].text;
-		loginPanel.SetActive(false);
-		uploadVideoPanel.SetActive(true);
+		// loginPanel.SetActive(false);
+		// uploadVideoPanel.SetActive(true);
 		sessionUser = unameField.text;  // TODO: Comment after testing
-    	// CheckLogin(unameField.text, passwdField.text, role);
+    	CheckLogin(unameField.text, passwdField.text, role);
     }
 
     public async void CheckLogin(string username, string password, string role){
-    	var values = new Dictionary<string, string>{{ "username", username },{ "password", password },{"role", role}, {"screenheight", Screen.height.ToString()}, {"screenwidth", Screen.width.ToString()}};
+    	var values = new Dictionary<string, string>{{ "username", username },{ "password", password },{"role", role}};
 		var content = new FormUrlEncodedContent(values);
-		var response = await client.PostAsync(Credentials.database_server_ip, content);
+		var response = await client.PostAsync(Credentials.database_server_ip+"login", content);
 
 		var responseString = await response.Content.ReadAsStringAsync();
 		Debug.Log("Login.CheckLogin() ===> Response from database server: " + responseString);

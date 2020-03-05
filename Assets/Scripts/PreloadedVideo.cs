@@ -75,5 +75,8 @@ public class PreloadedVideo : MonoBehaviour
         preloadVideoPanel.SetActive(true);
         p.GenerateButtons();
         // selectPatternPanel.SetActive(true);   // DELETE
+
+        // Send notifications when files are ready
+        
     }
 }

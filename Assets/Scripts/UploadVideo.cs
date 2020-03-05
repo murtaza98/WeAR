@@ -8,6 +8,11 @@ using System.Net.Sockets;
 using System.Text;
 using SimpleFileBrowser;
 using UnityEngine.Android;
+using UnityEngine.Networking;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
 
 public class UploadVideo : MonoBehaviour
 {
@@ -20,7 +25,7 @@ public class UploadVideo : MonoBehaviour
 		Button btn = uploadBtn.GetComponent<Button>();
 		btn.onClick.AddListener(UploadVideoTask);
 		uploadVideoPanel = GameObject.Find("UploadVideoPanel");
-		selectPatternPanel = FindInActiveObjectByName("SelectPatternPanel");
+		selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel");
 	}
 
 	IEnumerator ShowLoadDialogCoroutine()
@@ -33,63 +38,37 @@ public class UploadVideo : MonoBehaviour
 		if( FileBrowser.Success )
 		{
 			Debug.Log ("UploadVideo.ShowLoadDialogCoroutine() ===> Selecting video file");
-			try {  
-				// IPHostEntry ipHost = Dns.GetHostEntry("https://0c7cd9c4.ngrok.io"); 
-				// IPAddress ipAddr = ipHost.AddressList[0]; 
-				// Debug.Log(ipHost.AddressList[0]);
-				// IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 7000);
-				IPAddress ipAddr = IPAddress.Parse(Credentials.pose_estimation_server_ip);
-		        IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 60000); 
-		 		Debug.Log("Local End point: " + localEndPoint);
-		        Socket sender = new Socket(ipAddr.AddressFamily, 
-		                   SocketType.Stream, ProtocolType.Tcp); 
-		  		Debug.Log("Sender socket: " + sender);
-		        try { 
-		            sender.Connect(localEndPoint); 
-		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> Socket connected to: " + sender.RemoteEndPoint.ToString());
-		            string fileName = FileBrowser.Result;
-		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> Sending file: " + fileName);
-		            sender.Send(FileBrowserHelpers.ReadBytesFromFile(fileName));
-		            sender.Shutdown(SocketShutdown.Both);  
-		            sender.Close(); 
-					// Call script 
-					PreloadedVideo.PreloadVideoTask();
-		        }   
-		        catch (ArgumentNullException ane) { 
-		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> ArgumentNullException: " + ane.ToString()); 
-		        } 
-		        catch (SocketException se) { 
-		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> SocketException: " + se.ToString()); 
-		        } 
-		        catch (Exception e) { 
-		            Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> Unexpected exception: " + e.ToString()); 
-		        } 
-		    } 
-		    catch (Exception e) { 
-		        Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> " + e.ToString()); 
-		    } 
-		    // uploadVideoPanel.SetActive(false);
-		    // selectPatternPanel.SetActive(true);
-		}
+
+			/** HTTP POST Request for sending file **/
+			string fileName = FileBrowser.Result;
+			Debug.Log("Video filename: " + fileName);
+
+			/** Using HttpClient **/
+			Upload(fileName);
+			}
 	}
 
-	// Same in Logout.cs
-	/*** TODO: Make this method common ***/
-	GameObject FindInActiveObjectByName(string name)
-	{
-	    Transform[] objs = Resources.FindObjectsOfTypeAll<Transform>() as Transform[];
-	    for (int i = 0; i < objs.Length; i++)
-	    {
-	        if (objs[i].hideFlags == HideFlags.None)
-	        {
-	            if (objs[i].name == name)
-	            {
-	                return objs[i].gameObject;
-	            }
-	        }
-	    }
-	    return null;
-	}
+	private async void Upload(string fileName) {
+		byte[] fileContents = File.ReadAllBytes(fileName);
+
+		Uri webService = new Uri(Credentials.database_server_ip+"upload_video");
+		HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, webService);
+		requestMessage.Headers.ExpectContinue = false;
+
+		MultipartFormDataContent multiPartContent = new MultipartFormDataContent("----MyGreatBoundary");
+		ByteArrayContent byteArrayContent = new ByteArrayContent(fileContents);
+		byteArrayContent.Headers.Add("Content-Type", "application/octet-stream");
+		
+		StringContent stringContent = new StringContent(Login.sessionUser);
+		
+		multiPartContent.Add(byteArrayContent, "file", fileName);
+		multiPartContent.Add(stringContent, "username");
+		requestMessage.Content = multiPartContent;
+
+		HttpClient httpClient = new HttpClient();
+		Task<HttpResponseMessage> httpRequest = httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseContentRead, CancellationToken.None);
+		HttpResponseMessage httpResponse = httpRequest.Result;
+	}	
 
 	void UploadVideoTask(){
 		StartCoroutine( ShowLoadDialogCoroutine() );
