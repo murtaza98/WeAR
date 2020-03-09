@@ -8,9 +8,10 @@ public class Credentials : MonoBehaviour
 	public static string pose_estimation_server_ip = "192.168.0.104";
     public static string video_folder_path = "";
     public static string json_files_path = "";
+	public  static string json_2D_name = "";
+	public static string json_3D_name = "";
 
 	// Creating notification channels
-	
 
     public static GameObject FindInActiveObjectByName(string name)
 	{

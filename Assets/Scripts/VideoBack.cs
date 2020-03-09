@@ -5,9 +5,10 @@ using UnityEngine.UI;
 
 public class VideoBack : MonoBehaviour
 {
-    public GameObject trialRoomPanel, selectPatternPanel, videoPlayer;
+    public GameObject bounds, trialRoomPanel, selectPatternPanel, videoPlayer;
     public Button backBtn;
     void Start() {
+        bounds = GameObject.Find("bounds");
         trialRoomPanel = GameObject.Find("TrailRoomPanel");
         Debug.Log("VideoBack: " + trialRoomPanel);
         videoPlayer = GameObject.Find("VideoPlayerGO");
@@ -22,6 +23,7 @@ public class VideoBack : MonoBehaviour
         Debug.Log("VideoBack: BackTask");
         trialRoomPanel.SetActive(false);
         videoPlayer.SetActive(false);
+        bounds.SetActive(false);
         selectPatternPanel.SetActive(true);
     }
 }

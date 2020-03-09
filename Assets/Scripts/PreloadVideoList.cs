@@ -64,7 +64,10 @@ public class PreloadVideoList : MonoBehaviour
 
     public void OnClickButton() {
         string videoName = EventSystem.current.currentSelectedGameObject.GetComponent<Button>().GetComponentInChildren<Text>().text;
-        VideoName = videoName;
+        VideoName = videoName.Substring(0, videoName.Length-4);
+        Debug.Log("VIDEONAME: " + VideoName);
+        Credentials.json_2D_name = VideoName + "_2d.json";
+        Credentials.json_3D_name = VideoName + "_3d.json";
         preloadVideoPanel.SetActive(false);
         selectPatternPanel.SetActive(true);
     }

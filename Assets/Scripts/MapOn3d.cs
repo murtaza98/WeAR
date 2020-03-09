@@ -98,13 +98,13 @@ public class MapOn3d : MonoBehaviour
         cloth.neck_right = neck_right;
         cloth.torso = torso;
 
-         // Read 3d data points
-        string points_3d_str = Read("3d_data");
-        points_3d = JObject.Parse(points_3d_str);
+        // Read 3d data points
+        // string points_3d_str = Read("3d_data");
+        points_3d = JObject.Parse(File.ReadAllText(Login.jsonFilePath + "/" + Credentials.json_3D_name));
 
         // Read 2d data points
-        string points_2d_str = Read(PreloadVideoList.VideoName.Substring(0, PreloadVideoList.VideoName.Length-4) + "_2D");
-        points_2d = JObject.Parse(points_2d_str);
+        // string points_2d_str = Read(PreloadVideoList.VideoName.Substring(0, PreloadVideoList.VideoName.Length-4) + "_2D");
+        points_2d = JObject.Parse(File.ReadAllText(Login.jsonFilePath + "/" + Credentials.json_2D_name));
 
         cam = Camera.main;
     }

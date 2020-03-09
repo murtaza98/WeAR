@@ -17,15 +17,15 @@ using System.IO;
 public class UploadVideo : MonoBehaviour
 {
     public Button uploadBtn;
-	public GameObject uploadVideoPanel, selectPatternPanel;
+	public GameObject msgPanel;
 	public string poseEstimationServerIP = "192.168.43.8";
 	public int portNo = 60000;
 	
     void Start () {
 		Button btn = uploadBtn.GetComponent<Button>();
 		btn.onClick.AddListener(UploadVideoTask);
-		uploadVideoPanel = GameObject.Find("UploadVideoPanel");
-		selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel");
+		msgPanel = GameObject.Find("PreprocessMessagePanel");
+		msgPanel.SetActive(false);
 	}
 
 	IEnumerator ShowLoadDialogCoroutine()
@@ -45,7 +45,8 @@ public class UploadVideo : MonoBehaviour
 
 			/** Using HttpClient **/
 			Upload(fileName);
-			}
+			PreloadedVideo.PreloadVideoTask();
+		}
 	}
 
 	private async void Upload(string fileName) {
@@ -67,7 +68,7 @@ public class UploadVideo : MonoBehaviour
 
 		HttpClient httpClient = new HttpClient();
 		Task<HttpResponseMessage> httpRequest = httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseContentRead, CancellationToken.None);
-		HttpResponseMessage httpResponse = httpRequest.Result;
+		// HttpResponseMessage httpResponse = httpRequest.Result;
 	}	
 
 	void UploadVideoTask(){

@@ -11,7 +11,9 @@ public class SelectPreloadedVideo : MonoBehaviour
 
     void Start() {
         uploadVideoPanel = GameObject.Find("UploadVideoPanel");
+        Debug.Log(uploadVideoPanel);
         preloadVideoPanel = Credentials.FindInActiveObjectByName("PreloadVideoPanel");
+        Debug.Log(preloadVideoPanel);
         // selectPatternPanel = Credentials.FindInActiveObjectByName("SelectPatternPanel"); // DELETE
         p = FindObjectOfType<PreloadVideoList>();
         Button btn = selectBtn.GetComponent<Button>();
