@@ -41,7 +41,7 @@ public class MapOn3d : MonoBehaviour
     static Vector3[] now_pos_3d = new Vector3[bone_num_3d];
  
     public static float Timer;
-    float scale_ratio = 0.001f; //Scale ratio between pos.txt and Unity model
+    float scale_ratio = 0.0009f; //Scale ratio between pos.txt and Unity model
                                 //Since the unit of pos.txt is mm and Unity is m, 
                                 //specify a value close to 0.001. Adjust according to model size 
     float heal_position = 0.00f; // 足の沈みの補正値(単位：m)。プラス値で体全体が上へ移動する
@@ -57,7 +57,10 @@ public class MapOn3d : MonoBehaviour
     static JObject points_2d = null;
     static JObject points_3d = null;
 
-    Transform torso_skel, neck_left_skel, neck_right_skel, left_shoulder_skel, right_shoulder_skel, left_elbow_skel, right_elbow_skel, left_wrist_skel, right_wrist_skel;
+    Transform torso_skel, neck_left_skel, neck_right_skel, left_shoulder_skel, right_shoulder_skel, 
+    left_elbow_skel, right_elbow_skel, left_wrist_skel, right_wrist_skel;
+    Vector3 prev_torso_skel, prev_neck_left_skel, prev_neck_right_skel, prev_left_shoulder_skel, 
+    prev_right_shoulder_skel, prev_left_elbow_skel, prev_right_elbow_skel, prev_left_wrist_skel, prev_right_wrist_skel;
 
     private Camera cam;
     public GameObject videoPlayer;
@@ -200,20 +203,251 @@ public class MapOn3d : MonoBehaviour
         Vector3 left_waist_3d = now_pos_3d[1];
         Vector3 right_waist_3d = now_pos_3d[6];
 
-        // reset skel
-        this.torso_skel.Rotate(-90.0f, 0, 0, Space.Self);
-        // translate skel to 3d points
-        this.torso_skel.position = torso_pos_3d * scale_ratio;
-        this.neck_left_skel.position = neck_pos_3d * scale_ratio;
-        this.neck_right_skel.position = neck_pos_3d * scale_ratio;
-        this.left_shoulder_skel.position = left_shoulder_pos_3d * scale_ratio;
-        this.right_shoulder_skel.position = right_shoulder_pos_3d * scale_ratio;
-        this.left_elbow_skel.position = left_elbow_pos_3d * scale_ratio;
-        this.right_elbow_skel.position = right_elbow_pos_3d * scale_ratio;
-        this.left_wrist_skel.position = left_wrist_pos_3d * scale_ratio;
-        this.right_wrist_skel.position = right_wrist_pos_3d * scale_ratio;
-        // rotate skel
-        this.torso_skel.Rotate(90.0f, 0, 0, Space.Self);
+        
+        float cloth_scale = 0.0008f;
+        float s_length = 655.0f * cloth_scale; // neck to torso length
+        float s_shoulder = 205.0f * cloth_scale; // neck to shoulder length
+        float s_elbow = 230.0f * cloth_scale; // shoulder to elbow length
+        float s_wrist = 230.0f * scale_ratio; // elbow to wrist length
+
+
+
+        if(NowFrame == 1){
+            // reset skel
+            this.torso_skel.Rotate(-90.0f, 0, 0, Space.Self);
+            // translate skel to 3d points
+            this.torso_skel.position = torso_pos_3d * scale_ratio;
+            this.neck_left_skel.position = neck_pos_3d * scale_ratio;
+            this.neck_right_skel.position = neck_pos_3d * scale_ratio;
+            this.left_shoulder_skel.position = left_shoulder_pos_3d * scale_ratio;
+            this.right_shoulder_skel.position = right_shoulder_pos_3d * scale_ratio;
+            this.left_elbow_skel.position = left_elbow_pos_3d * scale_ratio;
+            this.right_elbow_skel.position = right_elbow_pos_3d * scale_ratio;
+            this.left_wrist_skel.position = left_wrist_pos_3d * scale_ratio;
+            this.right_wrist_skel.position = right_wrist_pos_3d * scale_ratio;
+            // rotate skel
+            this.torso_skel.Rotate(90.0f, 0, 0, Space.Self);
+
+
+
+
+            // rescale to appropriate size
+            Vector3 t_torso_pos_3d = this.torso_skel.position;
+            Vector3 t_neck_left_pos_3d = calc_newPosition(this.torso_skel.position, this.neck_left_skel.position, this.torso_skel.position, s_length);
+            Vector3 t_neck_right_pos_3d = calc_newPosition(this.torso_skel.position, this.neck_right_skel.position, this.torso_skel.position, s_length);
+            Vector3 t_left_shoulder_pos_3d = calc_newPosition(this.neck_left_skel.position, this.left_shoulder_skel.position, t_neck_left_pos_3d, s_shoulder);
+            Vector3 t_right_shoulder_pos_3d = calc_newPosition(this.neck_right_skel.position, this.right_shoulder_skel.position, t_neck_right_pos_3d, s_shoulder);
+            Vector3 t_left_elbow_pos_3d = calc_newPosition(this.left_shoulder_skel.position, this.left_elbow_skel.position, t_left_shoulder_pos_3d, s_elbow);
+            Vector3 t_right_elbow_pos_3d = calc_newPosition(this.right_shoulder_skel.position, this.right_elbow_skel.position, t_right_shoulder_pos_3d, s_elbow);
+            Vector3 t_left_wrist_pos_3d = calc_newPosition(this.left_elbow_skel.position, this.left_wrist_skel.position, t_left_elbow_pos_3d, s_wrist);
+            Vector3 t_right_wrist_pos_3d = calc_newPosition(this.right_elbow_skel.position, this.right_wrist_skel.position, t_right_elbow_pos_3d, s_wrist);
+
+
+            this.torso_skel.position = t_torso_pos_3d;
+            this.neck_left_skel.position = t_neck_left_pos_3d;
+            this.neck_right_skel.position = t_neck_right_pos_3d;
+            this.left_shoulder_skel.position = t_left_shoulder_pos_3d;
+            this.right_shoulder_skel.position = t_right_shoulder_pos_3d;
+            this.left_elbow_skel.position = t_left_elbow_pos_3d;
+            this.right_elbow_skel.position = t_right_elbow_pos_3d;
+            this.left_wrist_skel.position = t_left_wrist_pos_3d;
+            this.right_wrist_skel.position = t_right_wrist_pos_3d;
+
+
+
+
+            // for first frame, initialize the prev_skel_points
+            this.prev_torso_skel = this.torso_skel.position;
+            this.prev_neck_left_skel = this.neck_left_skel.position;
+            this.prev_neck_right_skel = this.neck_right_skel.position;
+            this.prev_left_shoulder_skel = this.left_shoulder_skel.position;
+            this.prev_right_shoulder_skel = this.right_shoulder_skel.position;
+            this.prev_left_elbow_skel = this.left_elbow_skel.position;
+            this.prev_right_elbow_skel = this.right_elbow_skel.position;
+            this.prev_left_wrist_skel = this.left_wrist_skel.position;
+            this.prev_right_wrist_skel = this.right_wrist_skel.position;
+
+
+            // make all z equal to torso
+            float torso_skel_z = this.torso_skel.position.z;
+            this.torso_skel.position = new Vector3(this.torso_skel.position.x, this.torso_skel.position.y, torso_skel_z);
+            this.neck_left_skel.position = new Vector3(this.neck_left_skel.position.x, this.neck_left_skel.position.y, torso_skel_z);
+            this.neck_right_skel.position = new Vector3(this.neck_right_skel.position.x, this.neck_right_skel.position.y, torso_skel_z);
+            this.left_shoulder_skel.position = new Vector3(this.left_shoulder_skel.position.x, this.left_shoulder_skel.position.y, torso_skel_z);
+            this.right_shoulder_skel.position = new Vector3(this.right_shoulder_skel.position.x, this.right_shoulder_skel.position.y, torso_skel_z);
+            this.left_elbow_skel.position = new Vector3(this.left_elbow_skel.position.x, this.left_elbow_skel.position.y, torso_skel_z);
+            this.right_elbow_skel.position = new Vector3(this.right_elbow_skel.position.x, this.right_elbow_skel.position.y, torso_skel_z);
+            this.left_wrist_skel.position = new Vector3(this.left_wrist_skel.position.x, this.left_wrist_skel.position.y, torso_skel_z);
+            this.right_wrist_skel.position = new Vector3(this.right_wrist_skel.position.x, this.right_wrist_skel.position.y, torso_skel_z);
+
+        }else{
+
+            float actual_torso_skel_z = this.torso_skel.position.z;
+            float actual_neck_left_skel_z = this.neck_left_skel.position.z;
+            float actual_neck_right_skel_z = this.neck_right_skel.position.z;
+            float actual_left_shoulder_skel_z = this.left_shoulder_skel.position.z;
+            float actual_right_shoulder_skel_z = this.right_shoulder_skel.position.z;
+            float actual_left_elbow_skel_z = this.left_elbow_skel.position.z;
+            float actual_right_elbow_skel_z = this.right_elbow_skel.position.z;
+            float actual_left_wrist_skel_z = this.left_wrist_skel.position.z;
+            float actual_right_wrist_skel_z = this.right_wrist_skel.position.z;
+
+
+            // reset skel
+            this.torso_skel.Rotate(-90.0f, 0, 0, Space.Self);
+            // translate skel to 3d points
+            this.torso_skel.position = torso_pos_3d * scale_ratio;
+            this.neck_left_skel.position = neck_pos_3d * scale_ratio;
+            this.neck_right_skel.position = neck_pos_3d * scale_ratio;
+            this.left_shoulder_skel.position = left_shoulder_pos_3d * scale_ratio;
+            this.right_shoulder_skel.position = right_shoulder_pos_3d * scale_ratio;
+            this.left_elbow_skel.position = left_elbow_pos_3d * scale_ratio;
+            this.right_elbow_skel.position = right_elbow_pos_3d * scale_ratio;
+            this.left_wrist_skel.position = left_wrist_pos_3d * scale_ratio;
+            this.right_wrist_skel.position = right_wrist_pos_3d * scale_ratio;
+            // rotate skel
+            this.torso_skel.Rotate(90.0f, 0, 0, Space.Self);
+
+
+            // rescale to appropriate size
+            Vector3 t_torso_pos_3d = this.torso_skel.position;
+            Vector3 t_neck_left_pos_3d = calc_newPosition(this.torso_skel.position, this.neck_left_skel.position, this.torso_skel.position, s_length);
+            Vector3 t_neck_right_pos_3d = calc_newPosition(this.torso_skel.position, this.neck_right_skel.position, this.torso_skel.position, s_length);
+            Vector3 t_left_shoulder_pos_3d = calc_newPosition(this.neck_left_skel.position, this.left_shoulder_skel.position, t_neck_left_pos_3d, s_shoulder);
+            Vector3 t_right_shoulder_pos_3d = calc_newPosition(this.neck_right_skel.position, this.right_shoulder_skel.position, t_neck_right_pos_3d, s_shoulder);
+            Vector3 t_left_elbow_pos_3d = calc_newPosition(this.left_shoulder_skel.position, this.left_elbow_skel.position, t_left_shoulder_pos_3d, s_elbow);
+            Vector3 t_right_elbow_pos_3d = calc_newPosition(this.right_shoulder_skel.position, this.right_elbow_skel.position, t_right_shoulder_pos_3d, s_elbow);
+            Vector3 t_left_wrist_pos_3d = calc_newPosition(this.left_elbow_skel.position, this.left_wrist_skel.position, t_left_elbow_pos_3d, s_wrist);
+            Vector3 t_right_wrist_pos_3d = calc_newPosition(this.right_elbow_skel.position, this.right_wrist_skel.position, t_right_elbow_pos_3d, s_wrist);
+
+
+            this.torso_skel.position = t_torso_pos_3d;
+            this.neck_left_skel.position = t_neck_left_pos_3d;
+            this.neck_right_skel.position = t_neck_right_pos_3d;
+            this.left_shoulder_skel.position = t_left_shoulder_pos_3d;
+            this.right_shoulder_skel.position = t_right_shoulder_pos_3d;
+            this.left_elbow_skel.position = t_left_elbow_pos_3d;
+            this.right_elbow_skel.position = t_right_elbow_pos_3d;
+            this.left_wrist_skel.position = t_left_wrist_pos_3d;
+            this.right_wrist_skel.position = t_right_wrist_pos_3d;
+
+
+            // calc diff in z from prev frame
+            float new_torso_z = actual_torso_skel_z + (this.torso_skel.position.z - this.prev_torso_skel.z);
+            float new_neck_left_z = actual_neck_left_skel_z + (this.neck_left_skel.position.z - this.prev_neck_left_skel.z);
+            float new_neck_right_z = actual_neck_right_skel_z + (this.neck_right_skel.position.z - this.prev_neck_right_skel.z);
+            float new_left_shoulder_z = actual_left_shoulder_skel_z + (this.left_shoulder_skel.position.z - this.prev_left_shoulder_skel.z);
+            float new_right_shoulder_z = actual_right_shoulder_skel_z + (this.right_shoulder_skel.position.z - this.prev_right_shoulder_skel.z);
+            float new_left_elbow_z = actual_left_elbow_skel_z + (this.left_elbow_skel.position.z - this.prev_left_elbow_skel.z);
+            float new_right_elbow_z = actual_right_elbow_skel_z + (this.right_elbow_skel.position.z - this.prev_right_elbow_skel.z);
+            float new_left_wrist_z = actual_left_wrist_skel_z + (this.left_wrist_skel.position.z - this.prev_left_wrist_skel.z);
+            float new_right_wrist_z = actual_right_wrist_skel_z + (this.right_wrist_skel.position.z - this.prev_right_wrist_skel.z);
+
+            // update prev_skel_points
+            this.prev_torso_skel = this.torso_skel.position;
+            this.prev_neck_left_skel = this.neck_left_skel.position;
+            this.prev_neck_right_skel = this.neck_right_skel.position;
+            this.prev_left_shoulder_skel = this.left_shoulder_skel.position;
+            this.prev_left_elbow_skel = this.left_elbow_skel.position;
+            this.prev_left_wrist_skel = this.left_wrist_skel.position;
+            this.prev_right_shoulder_skel = this.right_shoulder_skel.position;
+            this.prev_right_elbow_skel = this.right_elbow_skel.position;
+            this.prev_right_wrist_skel = this.right_wrist_skel.position;
+
+            // Debug.Log(actual_left_shoulder_skel_z + " " + this.left_shoulder_skel.position.z + " " + this.prev_left_shoulder_skel.z);
+
+            // keep x and y same and update the new z coordinate for each skel
+            Vector3 z_torso_pos = new Vector3(this.torso_skel.position.x, this.torso_skel.position.y, new_torso_z);
+            Vector3 z_neck_left_pos = new Vector3(this.neck_left_skel.position.x, this.neck_left_skel.position.y, new_neck_left_z);
+            Vector3 z_neck_right_pos = new Vector3(this.neck_right_skel.position.x, this.neck_right_skel.position.y, new_neck_right_z);
+            Vector3 z_left_shoulder_pos = new Vector3(this.left_shoulder_skel.position.x, this.left_shoulder_skel.position.y, new_left_shoulder_z);
+            Vector3 z_right_shoulder_pos = new Vector3(this.right_shoulder_skel.position.x, this.right_shoulder_skel.position.y, new_right_shoulder_z);
+            Vector3 z_left_elbow_pos = new Vector3(this.left_elbow_skel.position.x, this.left_elbow_skel.position.y, new_left_elbow_z);
+            Vector3 z_right_elbow_pos = new Vector3(this.right_elbow_skel.position.x, this.right_elbow_skel.position.y, new_right_elbow_z);
+            Vector3 z_left_wrist_pos = new Vector3(this.left_wrist_skel.position.x, this.left_wrist_skel.position.y, new_left_wrist_z);
+            Vector3 z_right_wrist_pos = new Vector3(this.right_wrist_skel.position.x, this.right_wrist_skel.position.y, new_right_wrist_z);
+
+
+            //////////////////////////////
+            this.torso_skel.position = z_torso_pos;
+            this.neck_left_skel.position = z_neck_left_pos;
+            this.neck_right_skel.position = z_neck_right_pos;
+            this.left_shoulder_skel.position = z_left_shoulder_pos;
+            this.right_shoulder_skel.position = z_right_shoulder_pos;
+            this.left_elbow_skel.position = z_left_elbow_pos;
+            this.right_elbow_skel.position = z_right_elbow_pos;
+            this.left_wrist_skel.position = z_left_wrist_pos;
+            this.right_wrist_skel.position = z_right_wrist_pos;
+
+
+            // make z coordinate of neck n torso the same
+            this.neck_left_skel.position = new Vector3(this.torso_skel.position.x, this.neck_left_skel.position.y, this.torso_skel.position.z);
+            this.neck_right_skel.position = new Vector3(this.torso_skel.position.x, this.neck_right_skel.position.y, this.torso_skel.position.z);
+            ///////////////////////////////
+
+
+            
+
+
+
+            // Vector3 f_neck_pos = calc_newPosition(z_torso_pos, z_neck_left_pos, z_torso_pos, s_length);
+            // Vector3 f_left_shoulder_pos = calc_newPosition(z_neck_left_pos, z_left_shoulder_pos, f_neck_pos, s_shoulder);
+            // Vector3 f_right_shoulder_pos = calc_newPosition(z_neck_right_pos, z_right_shoulder_pos, f_neck_pos, s_shoulder);
+            // Vector3 f_left_elbow_pos = calc_newPosition(z_left_shoulder_pos, z_left_elbow_pos, f_left_shoulder_pos, s_elbow);
+            // Vector3 f_right_elbow_pos = calc_newPosition(z_right_shoulder_pos, z_right_elbow_pos, f_right_shoulder_pos, s_elbow);
+            // Vector3 f_left_wrist_pos = calc_newPosition(z_left_elbow_pos, z_left_wrist_pos, f_left_elbow_pos, s_wrist);
+            // Vector3 f_right_wrist_pos = calc_newPosition(z_right_elbow_pos, z_right_wrist_pos, f_right_elbow_pos, s_wrist);
+
+
+
+            //////////////////// 
+            Vector3 f_neck_pos = calc_newPosition(this.torso_skel.position, this.neck_left_skel.position, this.torso_skel.position, s_length);
+            Vector3 f_left_shoulder_pos = calc_newPosition(this.neck_left_skel.position, this.left_shoulder_skel.position, f_neck_pos, s_shoulder);
+            Vector3 f_right_shoulder_pos = calc_newPosition(this.neck_right_skel.position, this.right_shoulder_skel.position, f_neck_pos, s_shoulder);
+            Vector3 f_left_elbow_pos = calc_newPosition(this.left_shoulder_skel.position, this.left_elbow_skel.position, f_left_shoulder_pos, s_elbow);
+            Vector3 f_right_elbow_pos = calc_newPosition(this.right_shoulder_skel.position, this.right_elbow_skel.position, f_right_shoulder_pos, s_elbow);
+            Vector3 f_left_wrist_pos = calc_newPosition(this.left_elbow_skel.position, this.left_wrist_skel.position, f_left_elbow_pos, s_wrist);
+            Vector3 f_right_wrist_pos = calc_newPosition(this.right_elbow_skel.position, this.right_wrist_skel.position, f_right_elbow_pos, s_wrist);
+
+
+            // this.torso_skel.position = z_torso_pos;
+            // this.neck_left_skel.position = f_neck_pos;
+            // this.neck_right_skel.position = f_neck_pos;
+            // this.left_shoulder_skel.position = f_left_shoulder_pos;
+            // this.right_shoulder_skel.position = f_right_shoulder_pos;
+            // this.left_elbow_skel.position = f_left_elbow_pos;
+            // this.right_elbow_skel.position = f_right_elbow_pos;
+            // this.left_wrist_skel.position = f_left_wrist_pos;
+            // this.right_wrist_skel.position = f_right_wrist_pos;
+
+            // this.d_neck.position = f_neck_pos;
+            // this.d_left_shoulder.position = f_left_shoulder_pos;
+            // this.d_right_shoudler.position = f_right_shoulder_pos;
+
+            // Debug.DrawLine(this.d_neck.position, this.d_left_shoulder.position);
+            // Debug.DrawLine(this.d_neck.position, this.d_right_shoudler.position);
+
+            //////////////////////////
+
+
+            // float a_neck_pos_z = this.left_shoulder_skel.position.z - ((this.left_shoulder_skel.position.z + this.right_shoulder_skel.position.z) / 2.0f);
+            // this.neck_left_skel.position = new Vector3(this.neck_left_skel.position.x, this.neck_left_skel.position.y, a_neck_pos_z);
+            // this.neck_right_skel.position = new Vector3(this.neck_right_skel.position.x, this.neck_right_skel.position.y, a_neck_pos_z);
+
+
+
+
+
+
+            Debug.DrawLine(this.torso_skel.position, this.neck_left_skel.position);
+            Debug.DrawLine(this.neck_left_skel.position, this.left_shoulder_skel.position);
+            Debug.DrawLine(this.neck_right_skel.position, this.right_shoulder_skel.position);
+            Debug.DrawLine(this.left_shoulder_skel.position, this.left_elbow_skel.position);
+            Debug.DrawLine(this.right_shoulder_skel.position, this.right_elbow_skel.position);
+            Debug.DrawLine(this.left_elbow_skel.position, this.left_wrist_skel.position);
+            Debug.DrawLine(this.right_elbow_skel.position, this.right_wrist_skel.position);
+        }
+
 
 
         // update now_pos_3d with the rotated positions
@@ -231,6 +465,18 @@ public class MapOn3d : MonoBehaviour
 
         // MOVE CLOTH to this rotated skel
         cloth.UpdatePositions(now_pos_3d, now_pos_2d, cam);
+    }
+
+    // calc position of point B, such that it is at 'distance' apart from start and same direction as A-B 
+    public Vector3 calc_newPosition(Vector3 A, Vector3 B, Vector3 start, float distance){
+        //Get the direction of the line
+        Vector3 direction = B - A;      
+        // Normalize vector and
+        // Get a new point at your distance from point start
+        // Vector3 newB = start + (Vector3.Normalize(direction) * distance);
+        Vector3 newB = start + (direction.normalized * distance);
+
+        return newB;
     }
 
     public static string Read(string filename) {
@@ -393,9 +639,27 @@ class Cloth5
         this.torso.rotation = Quaternion.FromToRotation(Vector3.left, left_shoulder_pos_3d - right_shoulder_pos_3d);
 
 
+        this.torso.rotation = Quaternion.FromToRotation(Vector3.left, this.left_shoulder.position - this.right_shoulder.position);
+        this.neck_left.rotation = Quaternion.FromToRotation(Vector3.down, this.neck_left.position - this.left_shoulder.position);
+        this.neck_right.rotation = Quaternion.FromToRotation(Vector3.down, this.neck_right.position - this.right_shoulder.position);
+        this.left_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, this.left_shoulder.position - this.left_elbow.position);
+        this.right_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, this.right_shoulder.position - this.right_elbow.position);
+        this.left_elbow.rotation = Quaternion.FromToRotation(Vector3.down, this.left_elbow.position - this.left_wrist.position);
+        this.right_elbow.rotation = Quaternion.FromToRotation(Vector3.down, this.right_wrist.position - this.right_wrist.position);
+
+
 
         // now translate this points to 2d world
         this.torso.position = cam.ScreenToWorldPoint(torso_pos_2d);
+
+
+        // adjust the cloth pos so that it is aligned with the neck
+        Vector3 a =  this.neck_left.position;
+        Vector3 b = cam.ScreenToWorldPoint(neck_pos_2d) - new Vector3(0.0f, 0.00f, 0.0f);
+
+        float translated_torso_y = this.torso.position.y - (a-b).y;
+        this.torso.position = new Vector3(this.torso.position.x, translated_torso_y, this.torso.position.z);
+
     }   
 
     public Vector3 cloneObj(Vector3 v){
