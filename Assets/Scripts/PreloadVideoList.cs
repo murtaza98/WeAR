@@ -64,7 +64,8 @@ public class PreloadVideoList : MonoBehaviour
 
     public void OnClickButton() {
         string videoName = EventSystem.current.currentSelectedGameObject.GetComponent<Button>().GetComponentInChildren<Text>().text;
-        VideoName = videoName.Substring(0, videoName.Length-4);
+        // VideoName = videoName.Substring(0, videoName.Length-4);
+        VideoName = "harsh_1920_1080";
         Debug.Log("VIDEONAME: " + VideoName);
         Credentials.json_2D_name = VideoName + "_2d.json";
         Credentials.json_3D_name = VideoName + "_3d.json";

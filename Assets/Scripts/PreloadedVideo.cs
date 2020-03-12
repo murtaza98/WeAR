@@ -37,7 +37,7 @@ public class PreloadedVideo : MonoBehaviour
         var values = new Dictionary<string, string>{{ "username", Login.sessionUser }};
 		var content = new FormUrlEncodedContent(values);
         Debug.Log("sfsdf");
-        preprocessText = GameObject.Find("PreprocessText").GetComponent<Text>();
+        // preprocessText = msgPanel.GetComponent<Text>();
         Debug.Log("PT: ", preprocessText);
 
         while(true) {
@@ -46,7 +46,7 @@ public class PreloadedVideo : MonoBehaviour
             if(responseString == "NotReady") {
                 Debug.Log("Files not ready");
                 msgPanel.SetActive(true);
-                preprocessText.text = "Files not ready!!!";
+                // preprocessText.text = "Files not ready!!!";
                 await Task.Delay(TimeSpan.FromSeconds(60));
                 
             }
@@ -79,7 +79,7 @@ public class PreloadedVideo : MonoBehaviour
     private static void Completed(object sender, AsyncCompletedEventArgs e) {
         Debug.Log("Files Downloaded");
         msgPanel.SetActive(true);
-        preprocessText.text = "Files Downloaded. Click on select preloaded video button";
+        // preprocessText.text = "Files Downloaded. Click on select preloaded video button";
         p = FindObjectOfType<PreloadVideoList>();
 
         // Send notifications when files are ready

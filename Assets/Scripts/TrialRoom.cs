@@ -20,15 +20,13 @@ public class TrialRoom : MonoBehaviour
 		trialRoomPanel = Credentials.FindInActiveObjectByName("TrailRoomPanel");
 		videoPlayer = Credentials.FindInActiveObjectByName("VideoPlayerGO");
 		bounds = Credentials.FindInActiveObjectByName("bounds");
-		if(bounds == null) {
-			bounds.SetActive(true);
-		}
 		selectPatternPanel = GameObject.Find("/Canvas/SelectPatternPanel");
 		selectPatternPanel.SetActive(false);
 		videoPlayer.SetActive(true);
 		Debug.Log(Path.Combine("file://" + Login.videoFilePath, PreloadVideoList.VideoName + ".mp4"));
 		videoPlayer.GetComponent<UnityEngine.Video.VideoPlayer>().url = Path.Combine("file://" + Login.videoFilePath, PreloadVideoList.VideoName + ".mp4");
 		trialRoomPanel.SetActive(true);
+		bounds.SetActive(true);
 		// Handheld.PlayFullScreenMovie(Path.Combine(Login.videoFilePath, PreloadVideoList.VideoName + ".mp4"), Color.black, FullScreenMovieControlMode.Full,  FullScreenMovieScalingMode.AspectFit);
 	}
 }

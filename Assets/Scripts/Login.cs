@@ -68,10 +68,10 @@ public class Login : MonoBehaviour
 	void TaskOnClick(){
 		Debug.Log("Login.TaskOnClick() ===> Login Button Clicked");
 		string role = roleField.options[roleField.value].text;
-		// loginPanel.SetActive(false);
-		// uploadVideoPanel.SetActive(true);
+		loginPanel.SetActive(false);
+		uploadVideoPanel.SetActive(true);
 		sessionUser = unameField.text;  // TODO: Comment after testing
-    	CheckLogin(unameField.text, passwdField.text, role);
+    	// CheckLogin(unameField.text, passwdField.text, role);
     }
 
     public async void CheckLogin(string username, string password, string role){
