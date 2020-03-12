@@ -630,13 +630,13 @@ class Cloth5
         this.left_wrist.position = left_wrist_pos_3d;
         this.right_wrist.position = right_wrist_pos_3d;
         //  calc rotation
-        this.right_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, right_shoulder_pos_3d - right_elbow_pos_3d);
-        this.left_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, left_shoulder_pos_3d - left_elbow_pos_3d);
-        this.right_elbow.rotation = Quaternion.FromToRotation(Vector3.down, right_elbow_pos_3d - right_wrist_pos_3d);
-        this.left_elbow.rotation = Quaternion.FromToRotation(Vector3.down, left_elbow_pos_3d - left_wrist_pos_3d);
-        this.neck_left.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - left_shoulder_pos_3d);
-        this.neck_right.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - right_shoulder_pos_3d);
-        this.torso.rotation = Quaternion.FromToRotation(Vector3.left, left_shoulder_pos_3d - right_shoulder_pos_3d);
+        // this.right_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, right_shoulder_pos_3d - right_elbow_pos_3d);
+        // this.left_shoulder.rotation = Quaternion.FromToRotation(Vector3.down, left_shoulder_pos_3d - left_elbow_pos_3d);
+        // this.right_elbow.rotation = Quaternion.FromToRotation(Vector3.down, right_elbow_pos_3d - right_wrist_pos_3d);
+        // this.left_elbow.rotation = Quaternion.FromToRotation(Vector3.down, left_elbow_pos_3d - left_wrist_pos_3d);
+        // this.neck_left.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - left_shoulder_pos_3d);
+        // this.neck_right.rotation = Quaternion.FromToRotation(Vector3.down, neck_pos_3d - right_shoulder_pos_3d);
+        // this.torso.rotation = Quaternion.FromToRotation(Vector3.left, left_shoulder_pos_3d - right_shoulder_pos_3d);
 
 
         this.torso.rotation = Quaternion.FromToRotation(Vector3.left, this.left_shoulder.position - this.right_shoulder.position);
