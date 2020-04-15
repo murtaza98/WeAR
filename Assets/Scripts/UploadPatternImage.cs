@@ -12,12 +12,14 @@ public class UploadPatternImage : MonoBehaviour
     public Button uploadImageBtn;
 	public string path;
 	public PopulateLayout p;
-    
+    public Text errorText;
+
 	void Start()
     {
 		p = FindObjectOfType<PopulateLayout>();
 		Button btn = uploadImageBtn.GetComponent<Button>();
-		btn.onClick.AddListener(UploadImageTask);	
+		btn.onClick.AddListener(UploadImageTask);
+		errorText = GameObject.Find("ErrorText").GetComponent<Text>();	
 	}   
 
 	void UploadImageTask() {
@@ -40,24 +42,30 @@ public class UploadPatternImage : MonoBehaviour
 		    Debug.Log("UploadPatternImage.ShowLoadDialogCoroutine() ===> Saving file: " + fileName);
 
 			path = Path.Combine(Application.persistentDataPath, "Pattern");
-
-			if(Directory.Exists(path)) {
-				/*** TODO extract filename from path ***/
-				string[] splitFileName = fileName.Split('/');
-				path = Path.Combine(path, splitFileName[splitFileName.Length-1]);
-				Debug.Log("New Path: " + path);
-				if(!Directory.Exists(path)) {
-					File.WriteAllBytes(path, FileBrowserHelpers.ReadBytesFromFile(fileName));
+			
+			if(fileName.EndsWith(".png") || fileName.EndsWith(".jpg") || fileName.EndsWith(".jpeg")) {
+				if(Directory.Exists(path)) {
+					/*** TODO extract filename from path ***/
+					string[] splitFileName = fileName.Split('/');
+					path = Path.Combine(path, splitFileName[splitFileName.Length-1]);
+					Debug.Log("New Path: " + path);
+					if(!Directory.Exists(path)) {
+						File.WriteAllBytes(path, FileBrowserHelpers.ReadBytesFromFile(fileName));
+					}
+					else {
+						Debug.Log("UploadPatternImage.ShowLoadDialogCoroutine() ===> File already Uploaded");
+					}
 				}
 				else {
-					Debug.Log("UploadPatternImage.ShowLoadDialogCoroutine() ===> File already Uploaded");
-				}
+					Debug.Log("UploadPatternImage.ShowLoadDialogCoroutine() ===> Directory not found: " + path);
+				}			
+				errorText.text = "";
+				path = Path.Combine(Application.persistentDataPath, "Pattern");
+				p.GenerateList(path);
 			}
 			else {
-				Debug.Log("UploadPatternImage.ShowLoadDialogCoroutine() ===> Directory not found: " + path);
-			}			
-			path = Path.Combine(Application.persistentDataPath, "Pattern");
-			p.GenerateList(path);
+				errorText.text = "Only png, jpg, jpeg formats supported!!!";
+			}
 		}
 	}
 }

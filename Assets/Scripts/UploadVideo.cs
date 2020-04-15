@@ -20,17 +20,19 @@ public class UploadVideo : MonoBehaviour
 	public GameObject msgPanel;
 	public string poseEstimationServerIP = "192.168.43.8";
 	public int portNo = 60000;
+	public Text errorText;
 	
     void Start () {
 		Button btn = uploadBtn.GetComponent<Button>();
 		btn.onClick.AddListener(UploadVideoTask);
 		msgPanel = GameObject.Find("PreprocessMessagePanel");
+		errorText = GameObject.Find("ErrorText").GetComponent<Text>();
 		msgPanel.SetActive(false);
 	}
 
 	IEnumerator ShowLoadDialogCoroutine()
 	{
-		// FileBrowser.SetFilters(true, (".mp4"));
+		FileBrowser.SetFilters(true, (".mp4"));
 		// FileBrowser.SingleClickMode = true;
 		yield return FileBrowser.WaitForLoadDialog( false, null, "Load File", "Load" );
 		Debug.Log("UploadVideo.ShowLoadDialogCoroutine() ===> Success, Result: " + FileBrowser.Success + ", " + FileBrowser.Result);
@@ -43,9 +45,15 @@ public class UploadVideo : MonoBehaviour
 			string fileName = FileBrowser.Result;
 			Debug.Log("Video filename: " + fileName);
 
-			/** Using HttpClient **/
-			Upload(fileName);
-			PreloadedVideo.PreloadVideoTask();
+			errorText.text = "";
+			if(fileName.EndsWith(".mp4")){
+				/** Using HttpClient **/
+				Upload(fileName);
+				PreloadedVideo.PreloadVideoTask();
+			}
+			else {
+				errorText.text = "Only mp4 format supported!!!";
+			}
 		}
 	}
 

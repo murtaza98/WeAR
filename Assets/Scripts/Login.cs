@@ -14,7 +14,7 @@ public class Login : MonoBehaviour
 	public static string path, jsonFilePath, videoFilePath;
     public GameObject uploadVideoPanel, uploadClothPanel, loginPanel, selectPatternPanel, trailRoomPanel, videoPlayer, preloadVideoPanel;
     public InputField unameField, passwdField;
-    public Dropdown roleField;
+    public Text errorText;
     private static readonly HttpClient client = new HttpClient();
 
     void Start () {
@@ -59,7 +59,6 @@ public class Login : MonoBehaviour
 		
     	unameField = GameObject.Find("UsernameInput").GetComponent<InputField>();
     	passwdField = GameObject.Find("PasswordInput").GetComponent<InputField>();
-    	roleField = GameObject.Find("RoleDropdown").GetComponent<Dropdown>();
 
 		Button btn = loginBtn.GetComponent<Button>();
 		btn.onClick.AddListener(TaskOnClick);
@@ -67,15 +66,24 @@ public class Login : MonoBehaviour
 
 	void TaskOnClick(){
 		Debug.Log("Login.TaskOnClick() ===> Login Button Clicked");
-		string role = roleField.options[roleField.value].text;
-		loginPanel.SetActive(false);
-		uploadVideoPanel.SetActive(true);
+		/*** HARDCODED LOGIN ***/
+		if(unameField.text == "murtaza"){
+			loginPanel.SetActive(false);
+			uploadVideoPanel.SetActive(true);
+		}
+		else {
+			// Invalid credentials display message
+			errorText = GameObject.Find("ErrorText").GetComponent<Text>();
+			errorText.text = "Invalid Credentials!!!";
+		}
 		sessionUser = unameField.text;  // TODO: Comment after testing
-    	// CheckLogin(unameField.text, passwdField.text, role);
+		/*** ------------------------- ***/
+
+    	// CheckLogin(unameField.text, passwdField.text);
     }
 
-    public async void CheckLogin(string username, string password, string role){
-    	var values = new Dictionary<string, string>{{ "username", username },{ "password", password },{"role", role}};
+    public async void CheckLogin(string username, string password){
+    	var values = new Dictionary<string, string>{{ "username", username },{ "password", password }};
 		var content = new FormUrlEncodedContent(values);
 		var response = await client.PostAsync(Credentials.database_server_ip+"login", content);
 
@@ -85,12 +93,10 @@ public class Login : MonoBehaviour
 		if(responseString == "success"){
 			sessionUser = username;
 			loginPanel.SetActive(false);
-			if(role == "User"){
-    			uploadVideoPanel.SetActive(true);
-			}
-			else{
-				uploadClothPanel.SetActive(true);
-			}
+			uploadVideoPanel.SetActive(true);
+		}
+		else {
+			// Invalid Credentials message display
 		}
     }
 }
