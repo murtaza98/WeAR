@@ -59,7 +59,7 @@ public class UploadPatternImage : MonoBehaviour
 				else {
 					Debug.Log("UploadPatternImage.ShowLoadDialogCoroutine() ===> Directory not found: " + path);
 				}			
-				errorText.text = "";
+				errorText.text = "Pattern uploaded!!!";
 				path = Path.Combine(Application.persistentDataPath, "Pattern");
 				p.GenerateList(path);
 			}

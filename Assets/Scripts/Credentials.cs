@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Credentials : MonoBehaviour
 {
-    public static string database_server_ip = "http://192.168.43.51:5000/";
+    public static string database_server_ip = "http://1942d18d.ngrok.io/";
 	public static string pose_estimation_server_ip = "192.168.0.104";
     public static string video_folder_path = "";
     public static string json_files_path = "";

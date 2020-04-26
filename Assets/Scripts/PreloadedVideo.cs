@@ -37,7 +37,7 @@ public class PreloadedVideo : MonoBehaviour
         var values = new Dictionary<string, string>{{ "username", Login.sessionUser }};
 		var content = new FormUrlEncodedContent(values);
         Debug.Log("sfsdf");
-        // preprocessText = msgPanel.GetComponent<Text>();
+        preprocessText = msgPanel.GetComponent<Text>();
         Debug.Log("PT: ", preprocessText);
 
         while(true) {
@@ -71,6 +71,35 @@ public class PreloadedVideo : MonoBehaviour
                 webClient2.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
                 webClient2.DownloadFile(new System.Uri(json3DFileURI), Login.jsonFilePath + "/" + values["Json3DFileName"].Split('/')[1]);
                 Debug.Log("JSON files downloaded at: " + Login.jsonFilePath);
+
+                Debug.Log("Files Downloaded");
+                msgPanel.SetActive(true);
+                preprocessText.text = "Files Downloaded. Click on select preloaded video button";
+                p = FindObjectOfType<PreloadVideoList>();
+                Debug.Log("SENDING NOTIFICATIONS");
+                // Send notifications when files are ready
+                var c = new AndroidNotificationChannel() {
+                    Id = "channel_id",
+                    Name = "Default Channel",
+                    Importance = Importance.High,
+                    Description = "Generic notifications",
+                };
+                AndroidNotificationCenter.RegisterNotificationChannel(c);
+
+                var notification = new AndroidNotification();
+                notification.Title = "Video Ready";
+                notification.Text = "Your video is processed. Try clothes now!!!";
+                notification.FireTime = System.DateTime.Now;
+
+                AndroidNotificationCenter.SendNotification(notification, "channel_id");
+
+                Debug.Log("NOTIFICATIONS SENT");
+                // TODO: Show text on UI for files ready
+                uploadVideoPanel.SetActive(false);
+                preloadVideoPanel.SetActive(true);
+                p.GenerateButtons();
+                // selectPatternPanel.SetActive(true);   // DELETE
+
                 break;
             }
         }
@@ -79,9 +108,9 @@ public class PreloadedVideo : MonoBehaviour
     private static void Completed(object sender, AsyncCompletedEventArgs e) {
         Debug.Log("Files Downloaded");
         msgPanel.SetActive(true);
-        // preprocessText.text = "Files Downloaded. Click on select preloaded video button";
+        preprocessText.text = "Files Downloaded. Click on select preloaded video button";
         p = FindObjectOfType<PreloadVideoList>();
-
+        Debug.Log("SENDING NOTIFICATIONS");
         // Send notifications when files are ready
         var c = new AndroidNotificationChannel() {
             Id = "channel_id",
@@ -92,12 +121,13 @@ public class PreloadedVideo : MonoBehaviour
         AndroidNotificationCenter.RegisterNotificationChannel(c);
 
         var notification = new AndroidNotification();
-        notification.Title = "SomeTitle";
-        notification.Text = "SomeText";
+        notification.Title = "Video Ready";
+        notification.Text = "Your video is processed. Try clothes now!!!";
         notification.FireTime = System.DateTime.Now;
 
         AndroidNotificationCenter.SendNotification(notification, "channel_id");
 
+        Debug.Log("NOTIFICATIONS SENT");
         // TODO: Show text on UI for files ready
         uploadVideoPanel.SetActive(false);
         preloadVideoPanel.SetActive(true);
