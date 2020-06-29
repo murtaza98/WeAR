@@ -34,3 +34,6 @@ The problem is to create a mobile application based on AR that can be used by cu
       
 ## Testing
   If you want to try out this app, then you can download and install the `apk` on any Android device from [here](https://drive.google.com/file/d/1h9Wr5je8E_fPIkyx_kjB1CcDXtiW8El-/view?usp=sharing). You will need the server running(Step 3 above)
+  
+## Project Report
+A detailed project report for this project can be found [here](./Project-Report.pdf)
