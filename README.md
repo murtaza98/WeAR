@@ -28,4 +28,3 @@ Try clothes in AR.
       - Click Switch Platform to select Android as the target platform.
       - Wait for the spinner (compiling) icon to stop in the bottom right corner of the Unity status bar.
       - Click Build and Run
-        
