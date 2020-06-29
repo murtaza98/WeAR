@@ -1,6 +1,9 @@
 # WeAR
 Try clothes in AR.
 
+## Problem Definition
+The problem is to create a mobile application based on AR that can be used by customers to visualize clothes on themselves. This application can be integrated with online shopping websites as an aid to customers who find it difficult to choose the right pattern and size of clothes. All the existing solutions use special hardware for depth sensing and user size and pose estimation. This type of solution cannot be used in an online shopping website as the user may not have the required hardware available with them. The application should be designed in such a way that it needs no external hardware and should be able to run on the user's smartphone with a camera.
+
 ## Requirements
 
 * [Unity](http://unity3d.com/) 5.3 or higher.
