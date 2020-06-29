@@ -28,3 +28,6 @@ Try clothes in AR.
       - Click Switch Platform to select Android as the target platform.
       - Wait for the spinner (compiling) icon to stop in the bottom right corner of the Unity status bar.
       - Click Build and Run
+      
+## Testing
+  If you want to try out this app, then you can download and install the `apk` on any Android device from [here](https://drive.google.com/file/d/1h9Wr5je8E_fPIkyx_kjB1CcDXtiW8El-/view?usp=sharing)
