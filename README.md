@@ -20,8 +20,8 @@ Try clothes in AR.
       - Navigate to `Assets/Scenes/SampleScene.unity` in the `Project` window.
       - Double click on the `SampleScene.unity` file to open it.
    - Start the server.
-      - Clone this server repo and start the python server.
-      - Enter the server URL in this app over [here](https://github.com/murtaza98/WeAR/blob/ab6f4173a0700960f17d08d88b76ff62a4333a34/Assets/Scripts/Credentials.cs#L7). 
+      - Start the `WeAR-Server` from [this](https://github.com/ojasskapre/WeAR-Server) repo.
+      - Enter the server URL in this app over [here](https://github.com/murtaza98/WeAR/blob/ab6f4173a0700960f17d08d88b76ff62a4333a34/Assets/Scripts/Credentials.cs#L7) and [here](https://github.com/murtaza98/WeAR/blob/ab6f4173a0700960f17d08d88b76ff62a4333a34/Assets/Scripts/Credentials.cs#L8). 
    - Build for Android
       - Select the File > Build Settings menu option.
       - Select Android in the Platform list.
